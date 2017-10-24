@@ -1,5 +1,6 @@
 # wordpress-owncloud-integration
 Connect your ownCloud to your wordpress instance and use it as media pool
+NOTE: Work in progress. Not meant for use in production environments.
 
 ### Installation
 - clone repository in wp-content/plugins/
