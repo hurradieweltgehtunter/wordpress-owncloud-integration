@@ -284,6 +284,7 @@ class PluginPage
         include 'vendor/autoload.php';
         $settings = array(
             'baseUri' => $this->options['baseUri'] . 'remote.php/webdav',
+            'baseUri' => $this->options['baseUri'] . '/remote.php/webdav',
             'userName' => $this->options['userName'],
             'password' => $this->options['password']
         );
