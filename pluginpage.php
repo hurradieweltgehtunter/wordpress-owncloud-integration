@@ -22,6 +22,8 @@ class PluginPage
         add_filter( 'attachment_fields_to_save', array($this, 'save_custom_attachment_fields'), 10, 2 );
 
         //AJAX Functions
+        add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
+        add_action( 'wp_ajax_set_root_folder', array( $this, 'AJAX_set_root_folder' ));
         add_action( 'wp_ajax_get_files', array( $this, 'AJAX_sync' ) );
         add_action( 'wp_ajax_empty_media_pool', array( $this, 'AJAX_empty_media_pool' ));
         add_action( 'wp_ajax_test_connection', array( $this, 'AJAX_test_connection' ));
@@ -30,6 +32,7 @@ class PluginPage
         $this->options['baseUri'] = get_option('ocBaseUri');
         $this->options['userName'] = get_option('ocUserName');
         $this->options['password'] = get_option('ocPassword');
+        $this->options['rootPath'] = get_option('ocRootPath');
         $this->options['depth'] = 1;
 
         $settings = array(
@@ -87,7 +90,7 @@ class PluginPage
             update_option('ocPassword', $_POST['ocPassword']);
             $this->options['password'] = $_POST['ocPassword'];
         }
-        
+
         ?>
         <div class="wrap">
             <h1>My Settings</h1>
@@ -117,6 +120,16 @@ class PluginPage
                         </tr>
 
                         <tr>
+                            <th scope="row"><label for="ocRootPath">ocRootPath</label></th>
+                            <td>
+                                <input type="text" id="ocRootPath" value="<?php echo $this->options['rootPath']; ?>" class="regular-text" readonly>
+                                <button class="get-folder-list button button-primary button-small">Get Folder List</button>
+                                <p class="description">Root Pfad</p>
+                                <div class="folder-list" style="position: relative;"></div>
+                            </td>
+                        </tr>
+
+                        <tr>
                             <th scope="row">&nbsp;</th>
                             <td>
                                 <button class="test-connection button button-primary button-large">Test Connection</button>
@@ -129,6 +142,7 @@ class PluginPage
                 <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
                 <input type="submit" value="Save" class="button button-primary button-large">
             </form>
+            <button class="get-folder-list">Get folder list</button>
             <button class="runner">Run sync</button>
             <button class="empty">Empty media pool</button>
             <div class="sk-folding-cube loadanimation hidden">
@@ -148,7 +162,7 @@ class PluginPage
 
                 <div class="oc-circle l3 s2 el5"></div>
                 <div class="oc-circle l3 s2 el6"></div>
-                
+
                 <div class="oc-circle l4 s3 el7"></div>
                 <div class="oc-circle l4 s2 el8"></div>
                 <div class="oc-circle l4 s3 el9"></div>
@@ -183,7 +197,7 @@ class PluginPage
             'input' => 'hidden',
             'value' => get_post_meta( $post->ID, 'oc_etag', true )
         );
-     
+
         return $form_fields;
     }
 
@@ -196,7 +210,6 @@ class PluginPage
 
         if( isset( $attachment['oc_etag'] ) )
             update_post_meta( $post['ID'], 'oc_etag', $attachment['oc_etag'] );
-     
         return $post;
     }
 
@@ -217,7 +230,7 @@ class PluginPage
         return $new_input;
     }
 
-    /** 
+    /**
      * Get the settings option array and print one of its values
      */
     public function id_number_callback()
@@ -228,7 +241,7 @@ class PluginPage
         );
     }
 
-    /** 
+    /**
      * Get the settings option array and print one of its values
      */
     public function title_callback()
@@ -290,6 +303,67 @@ class PluginPage
             print_r($upload_file);
             echo '----------';
         }
+    }
+
+    public function AJAX_get_folder_list() {
+        include 'vendor/autoload.php';
+
+        $folders = array(
+            'name' => 'ownCloud Root',
+            'path' => '/owncloud/remote.php/webdav/',
+            'subs' => array(),
+        );
+
+        $settings = array(
+            'baseUri' => $this->options['baseUri'] . '/remote.php/webdav',
+            'userName' => $this->options['userName'],
+            'password' => $this->options['password']
+        );
+
+        $client = new Client($settings);
+
+        $folders['subs'] = $this->scanFolder($folders['subs'], $folders['path'], $client);
+
+        echo json_encode(array('folders' => $folders));
+        wp_die();
+    }
+
+    public function AJAX_set_root_folder() {
+        update_option('ocRootPath', $_POST['folder']);
+
+        echo json_encode(array('success' => true, 'rootPath' => $_POST['folder']));
+        wp_die();
+    }
+
+    /**
+     * Scans directory for subfolders
+     *
+     * @param array $folders parent folder array
+     * @param string $path relative parent folder path
+     * @param Sabre\DAV\Client $client WebDAV client
+     */
+    public function scanFolder($folders, $path, $client) {
+        $response = $client->propfind($path, array(
+            '{DAV:}resourcetype',
+        ), 1);
+
+        foreach ($response as $uri => $props) {
+            $title = str_replace($path, '', $uri);
+
+            if($props['{DAV:}resourcetype'] !== null) {
+                $folder = array(
+                    'name' => $title,
+                    'path' => $uri,
+                    'subs' => array(),
+                );
+
+                if ($folder['path'] != $path) {
+                    $folder['subs'] = $this->scanFolder($folder['subs'], $folder['path'], $client);
+                    array_push($folders, $folder);
+                }
+            }
+        }
+        return $folders;
     }
 
     public function AJAX_sync() {
@@ -396,7 +470,7 @@ class PluginPage
         );
 
         $client = new Client($settings);
-        
+
         try {
             $response = $client->request('GET');
 
@@ -413,7 +487,7 @@ class PluginPage
                     default:
                         echo json_encode(array('status' => 'error', 'message' => 'There was an unknown error. <br />' . nl2br(print_r($response, true))));
                         break;
-                }    
+                }
             } else {
                 echo json_encode(array('status' => 'success', 'message' => 'Connection could be successfully established.'));
             }
