@@ -91,6 +91,11 @@ class PluginPage
             $this->options['password'] = $_POST['ocPassword'];
         }
 
+        if (isset($_POST['ocRootPath'])) {
+            update_option('ocRootPath', $_POST['ocRootPath']);
+            $this->options['rootPath'] = $_POST['ocRootPath'];
+        }
+
         ?>
         <div class="wrap">
             <h1>My Settings</h1>
@@ -122,10 +127,10 @@ class PluginPage
                         <tr>
                             <th scope="row"><label for="ocRootPath">ocRootPath</label></th>
                             <td>
-                                <input type="text" id="ocRootPath" value="<?php echo $this->options['rootPath']; ?>" class="regular-text" readonly>
+                                <input name="ocRootPath" type="text" id="ocRootPath" value="<?php echo $this->options['rootPath']; ?>" class="regular-text" readonly>
                                 <button class="get-folder-list button button-primary button-small">Get Folder List</button>
                                 <p class="description">Root Pfad</p>
-                                <div class="folder-list" style="position: relative;"></div>
+                                <div class="folder-list"></div>
                             </td>
                         </tr>
 
@@ -133,6 +138,7 @@ class PluginPage
                             <th scope="row">&nbsp;</th>
                             <td>
                                 <button class="test-connection button button-primary button-large">Test Connection</button>
+
                                 <div class="test-result"></div>
                             </td>
                         </tr>
@@ -142,7 +148,7 @@ class PluginPage
                 <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
                 <input type="submit" value="Save" class="button button-primary button-large">
             </form>
-            <button class="get-folder-list">Get folder list</button>
+
             <button class="runner">Run sync</button>
             <button class="empty">Empty media pool</button>
             <div class="sk-folding-cube loadanimation hidden">
@@ -178,8 +184,10 @@ class PluginPage
     public function page_enqueue() {
         wp_deregister_script('jquery');
         wp_enqueue_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js', array(), '3.2.1');
+        wp_enqueue_script('jsTree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js', array('jquery'), '3.2.1');
         wp_enqueue_script('my_custom_script', plugin_dir_url(__FILE__) . '/js/custom-script.js', array('jquery'), 1, true);
 
+        wp_enqueue_style( 'jsTree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css' );
         wp_enqueue_style( 'style', plugin_dir_url(__FILE__) . '/css/styles.css' );
     }
 
