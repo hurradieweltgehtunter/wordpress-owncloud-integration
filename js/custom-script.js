@@ -41,6 +41,8 @@ $(document).ready(function() {
     $('.get-folder-list').on('click', function(e) {
         e.preventDefault();
 
+        $('.folder-list').jstree(true).destroy(true);
+
         var div = $('.folder-list');
 
         div.html('');
@@ -53,15 +55,11 @@ $(document).ready(function() {
                 'action': 'get_folder_list',
             },
             success: function(res) {
-                var root = res.folders;
+                var ul = $('<ul/>');
+                printFolder(res.folders, ul);
+                ul.appendTo(div);
 
-                var line = $('<div/>')
-                var link = $('<a href="" data-path="' + root.path + '">/</a>');
-                link.addClass('set-root-folder');
-                link.appendTo(line);
-                line.appendTo(div);
-
-                printFolder(root, 0, div);
+                div.jstree();
             }
         });
     })
@@ -69,19 +67,7 @@ $(document).ready(function() {
     $('body').on('click', '.set-root-folder', function(e) {
         e.preventDefault();
         var path = $(this).data('path');
-
-        $.ajax({
-            url: ajaxurl, // defined in admin header -> admin-ajax.php
-            dataType: 'JSON',
-            method: 'POST',
-            data: {
-                'action': 'set_root_folder',
-                'folder': path
-            },
-            success: function(response) {
-                $('#ocRootPath').val(path);
-            }
-        });
+        $('#ocRootPath').val(path);
 
         return false;
     });
@@ -108,19 +94,23 @@ $(document).ready(function() {
 
         return false;
     })
+
+    $('.folder-list').jstree();
 })
 
-function printFolder(folder, depth, div) {
-    folder.subs.forEach(function(sub) {
-        var line = $('<div/>')
-        var link = $('<a href="" data-path="' + sub.path + '"></a>');
-        link.addClass('set-root-folder');
-        link.html('- '.repeat(depth) + sub.name);
-        link.appendTo(line);
-        line.appendTo(div);
+function printFolder(folder, parent) {
+  var folder_li = $('<li data-path="' + folder.path + '"/>');
+  folder_li.html(folder.name);
+  folder_li.addClass('set-root-folder');
+  folder_li.appendTo(parent);
 
-        if (sub.subs.length > 0) {
-            printFolder(sub, depth + 1, div);
-        }
+  if (folder.subs.length > 0) {
+    var ul = $('<ul/>');
+
+    folder.subs.forEach(function(sub) {
+      printFolder(sub, ul);
     });
+
+    ul.appendTo(folder_li);
+  }
 }
