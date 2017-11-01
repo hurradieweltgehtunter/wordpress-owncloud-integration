@@ -8,7 +8,7 @@ $(document).ready(function() {
             dataType: 'JSON',
             method: 'POST',
             data: {
-                'action': 'get_files',
+                action: 'get_files'
             },
             success: function(response) {
                 $.each(response.log, function(k, message) {
@@ -21,7 +21,6 @@ $(document).ready(function() {
     });
 
     $('.empty').on('click', function() {
-
         $('.result').html('');
 
         $.ajax({
@@ -29,7 +28,7 @@ $(document).ready(function() {
             dataType: 'JSON',
             method: 'POST',
             data: {
-                'action': 'empty_media_pool',
+                action: 'empty_media_pool'
             },
             success: function(response) {
                 $('.result').html(JSON.stringify(response));
@@ -40,7 +39,9 @@ $(document).ready(function() {
     $('.get-folder-list').on('click', function(e) {
         e.preventDefault();
 
-        $('.folder-list').jstree(true).destroy(true);
+        $('.folder-list')
+            .jstree(true)
+            .destroy(true);
 
         var div = $('.folder-list');
 
@@ -51,16 +52,20 @@ $(document).ready(function() {
             dataType: 'JSON',
             method: 'POST',
             data: {
-                'action': 'get_folder_list',
+                action: 'get_folder_list'
             },
             success: function(res) {
                 var ul = $('<ul/>');
                 printFolder(res.folders, ul);
                 ul.appendTo(div);
 
-                div.on('changed.jstree', function (e, data) {
-                    $('#ocRootPath').val(data.instance.get_node(data.selected).data.path);
-                }).jstree();
+                div
+                    .on('changed.jstree', function(e, data) {
+                        $('#ocRootPath').val(
+                            data.instance.get_node(data.selected).data.path
+                        );
+                    })
+                    .jstree();
             }
         });
     });
@@ -69,13 +74,17 @@ $(document).ready(function() {
         e.preventDefault();
         var elem = $('.test-result');
         elem.html('');
-        $('<i/>').addClass('fa fa-spin fa-cog').appendTo(elem);
+        $('<i/>')
+            .addClass('fa')
+            .addClass('fa-spin')
+            .addClass('fa-cog')
+            .appendTo(elem);
         $.ajax({
             url: ajaxurl, // defined in admin header -> admin-ajax.php
             dataType: 'JSON',
             method: 'POST',
             data: {
-                'action': 'test_connection',
+                action: 'test_connection',
                 credentials: {
                     baseUri: $('#ocBaseUri').val(),
                     userName: $('#ocUserName').val(),
@@ -87,11 +96,13 @@ $(document).ready(function() {
 
                 var icon = $('<i/>').addClass('fa');
 
-                if (response.message == 'Connection could be successfully established.') {
-                    icon.addClass('fa-check icon-green');
-                }
-                else {
-                    icon.addClass('fa-exclamation-circle icon-red');
+                if (
+                    response.message ==
+                    'Connection could be successfully established.'
+                ) {
+                    icon.addClass('fa-check').addClass('icon-green');
+                } else {
+                    icon.addClass('fa-exclamation-circle').addClass('icon-red');
                 }
 
                 icon.prependTo($('.test-result'));
