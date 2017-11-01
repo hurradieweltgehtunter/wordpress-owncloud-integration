@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OC Access\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-01 20:26+0000\n"
-"PO-Revision-Date: 2017-11-01 20:26+0000\n"
+"POT-Creation-Date: 2017-11-01 20:28+0000\n"
+"PO-Revision-Date: 2017-11-01 20:28+0000\n"
 "Last-Translator: dansch <Daniel.Schwarz@blackit.de>\n"
 "Language-Team: German\n"
 "Language: de-DE\n"
@@ -13,9 +13,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:147
-msgid "ocRootPath"
-msgstr "Wurzelverzeichnis"
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:127
+msgid "ocPassword"
+msgstr "ocPasswort"
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:112
 msgid "URL to your ownCloud instance"
@@ -32,6 +32,10 @@ msgstr "App-Passwort"
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:140
 msgid "Test Connection"
 msgstr "Teste Verbindung"
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:147
+msgid "ocRootPath"
+msgstr "Wurzelverzeichnis"
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:152
 msgid "Get Folder List"

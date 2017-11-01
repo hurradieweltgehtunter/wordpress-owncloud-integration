@@ -124,7 +124,7 @@ class PluginPage
                         </tr>
 
                         <tr>
-                            <th scope="row"><label for="ocPassword">ocPassword</label></th>
+                            <th scope="row"><label for="ocPassword"><?php _e('ocPassword', 'wordpress-owncloud-integration') ?></label></th>
                             <td><input name="ocPassword" type="password" id="ocPassword" value="<?php echo $this->options['password']; ?>" class="regular-text">
                                 <p class="description">
                                     <?php _e('App password', 'wordpress-owncloud-integration') ?>
