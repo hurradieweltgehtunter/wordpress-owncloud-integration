@@ -1,5 +1,6 @@
 $(document).ready(function() {
-    $('.runner').on('click', function() {
+    $('.runner').on('click', function(e) {
+        e.preventDefault();
         $('.result').html('');
         $('.loadanimation').fadeIn(100);
 
@@ -21,6 +22,7 @@ $(document).ready(function() {
     });
 
     $('.empty').on('click', function() {
+        e.preventDefault();
         $('.result').html('');
 
         $.ajax({
