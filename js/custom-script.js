@@ -92,7 +92,7 @@ $(document).ready(function() {
 
                 var icon = $('<i/>').addClass('fa connection-icon');
 
-                if (response.message == 'Connection could be successfully established.') {
+                if (response.status === 'success') {
                     icon.addClass('fa-check icon-green');
                 }
                 else {
