@@ -26,6 +26,7 @@
 
 - Yannik Bürkle
   - [github](https://github.com/yannik-b)
+  - [website](https://yannik-buerkle.de)
 
 
 - Daniel Schwarz
