@@ -1,3 +1,21 @@
+.empty.button-primary {
+  background: #cc0000;
+  border-color: #cc0000;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: none;
+}
+.empty.button-primary:hover {
+  background: #ff0000;
+  border-color: #ff0000;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: none;
+}
 .oc {
   position: relative;
   background-color: #1c283c;
