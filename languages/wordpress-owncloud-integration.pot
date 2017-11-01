@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-01 20:31+0000\n"
+"POT-Creation-Date: 2017-11-01 20:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -66,20 +66,35 @@ msgstr ""
 msgid "Empty media pool"
 msgstr ""
 
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:511
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:449
+#, php-format
+msgid "%s already existing and changed; overwriting"
+msgstr ""
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:455
+#, php-format
+msgid "%s already existing and not changed; do nothing"
+msgstr ""
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:464
+#, php-format
+msgid "%s is new; inserting"
+msgstr ""
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:522
 msgid "Username or password was incorrect"
 msgstr ""
 
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:515
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:527
 msgid ""
 "ownCloud and/or webDav service not reachable. Please check your ownCloud URL"
 msgstr ""
 
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:519
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:531
 msgid "There was an unknown error."
 msgstr ""
 
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:523
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:535
 msgid "Connection could be successfully established."
 msgstr ""
 
