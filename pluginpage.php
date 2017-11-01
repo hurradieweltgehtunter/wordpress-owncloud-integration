@@ -329,7 +329,7 @@ class PluginPage
 
         $folders = array(
             'name' => 'ownCloud Root',
-            'path' => parse_url($this->options['baseUri'], PHP_URL_PATH) . '/remote.php/webdav/',
+            'path' => str_replace('//', '/', parse_url($this->options['baseUri'], PHP_URL_PATH) . '/remote.php/webdav/'),
             'subs' => array(),
         );
 
@@ -445,16 +445,25 @@ class PluginPage
                         $response = $client->request('GET', $file['name']);
                         $this->insertFile($file, $response['body']);
 
-                        $log[] = $file['name'] . ' already existing and changed; overwriting';
+                        $log[] = sprintf(
+                            __('%s already existing and changed; overwriting', 'wordpress-owncloud-integration'),
+                            $file['name']
+                        );
                     } else {
                         if(DEBUG) echo 'file ' . $file['name'] . ' has same etag; continue' . "\n";
-                        $log[] = $file['name'] . ' already existing and not changed; do nothing';
+                        $log[] = sprintf(
+                            __('%s already existing and not changed; do nothing', 'wordpress-owncloud-integration'),
+                            $file['name']
+                        );
                     }
                 } else {
                     if(DEBUG) echo 'file ' . $file['name'] . ' is not existing; inserting' . "\n";
                     $response = $client->request('GET', $file['name']);
                     $this->insertFile($file, $response['body']);
-                    $log[] = $file['name'] . ' is new; inserting';
+                    $log[] = sprintf(
+                        __('%s is new; inserting', 'wordpress-owncloud-integration'),
+                        $file['name']
+                    );
                 }
 
             } else {
@@ -508,7 +517,10 @@ class PluginPage
             if ($response['statusCode'] > 400) {
                 switch($response['statusCode']) {
                     case 401:
-                        echo json_encode(array('status' => 'error', 'message' => __('Username or password was incorrect', 'wordpress-owncloud-integration')));
+                        echo json_encode(array(
+                            'status' => 'error',
+                            'message' => __('Username or password was incorrect', 'wordpress-owncloud-integration')
+                        ));
                         break;
 
                     case 404:
