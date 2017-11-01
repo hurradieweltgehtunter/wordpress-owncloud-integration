@@ -488,7 +488,7 @@ class PluginPage
 
         foreach ( $attachments as $attachment ) {
             if ( false === wp_delete_attachment( $attachment->ID, true ) ) {
-                $log['errors'][] = 'Could not delete ' . $attachment->ID;
+                $log['errors'][] = __('Could not delete ', 'wordpress-owncloud-integration') . $attachment->ID;
             } else {
                 $log['success'][] = $attachment->ID . __('successfully deleted', 'wordpress-owncloud-integration');
             }

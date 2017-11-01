@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-01 20:44+0000\n"
+"POT-Creation-Date: 2017-11-01 20:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -79,6 +79,10 @@ msgstr ""
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:464
 #, php-format
 msgid "%s is new; inserting"
+msgstr ""
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:491
+msgid "Could not delete "
 msgstr ""
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:493

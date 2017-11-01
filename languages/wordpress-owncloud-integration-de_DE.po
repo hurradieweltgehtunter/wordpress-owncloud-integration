@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OC Access\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-01 20:44+0000\n"
-"PO-Revision-Date: 2017-11-01 20:44+0000\n"
+"POT-Creation-Date: 2017-11-01 20:48+0000\n"
+"PO-Revision-Date: 2017-11-01 20:48+0000\n"
 "Last-Translator: dansch <Daniel.Schwarz@blackit.de>\n"
 "Language-Team: German\n"
 "Language: de-DE\n"
@@ -13,9 +13,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:493
-msgid "successfully deleted"
-msgstr "erfolgreich gelöscht"
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:491
+msgid "Could not delete "
+msgstr "konnte nicht gelöscht werden"
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:109
 msgid "ownCloud URL"
@@ -83,6 +83,10 @@ msgstr "%s existiert bereits und wurde nicht verändert; mache nichts"
 #, php-format
 msgid "%s is new; inserting"
 msgstr "%s ist neu; hinzufügen"
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:493
+msgid "successfully deleted"
+msgstr "erfolgreich gelöscht"
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:522
 msgid "Username or password was incorrect"
