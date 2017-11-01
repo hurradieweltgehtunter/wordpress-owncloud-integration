@@ -74,7 +74,7 @@ $(document).ready(function() {
         e.preventDefault();
         var elem = $('.test-result');
         elem.html('');
-        $('<i/>').addClass('fa fa-spin fa-cog').appendTo(elem);
+        $('<i/>').addClass('fa fa-spin fa-cog connection-icon').appendTo(elem);
         $.ajax({
             url: ajaxurl, // defined in admin header -> admin-ajax.php
             dataType: 'JSON',
@@ -90,7 +90,7 @@ $(document).ready(function() {
             success: function(response) {
                 $('.test-result').html(response.message);
 
-                var icon = $('<i/>').addClass('fa');
+                var icon = $('<i/>').addClass('fa connection-icon');
 
                 if (
                     response.message ==
