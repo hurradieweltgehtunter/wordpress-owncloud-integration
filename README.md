@@ -25,9 +25,9 @@
 
 
 - Yannik Bürkle
- - [github](https://github.com/yannik-b)
+  - [github](https://github.com/yannik-b)
 
 
 - Daniel Schwarz
- - [github](https://github.com/dansch94)
- - [website](https://blackit.de)
+  - [github](https://github.com/dansch94)
+  - [website](https://blackit.de)
