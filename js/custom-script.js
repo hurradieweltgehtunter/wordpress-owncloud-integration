@@ -1,7 +1,6 @@
 $(document).ready(function() {
     $('.runner').on('click', function() {
-
-        $('.result').html('')
+        $('.result').html('');
         $('.loadanimation').fadeIn(100);
 
         $.ajax({
@@ -14,16 +13,16 @@ $(document).ready(function() {
             success: function(response) {
                 $.each(response.log, function(k, message) {
                     $('.result').append('<div>' + message + '</div>');
-                })
+                });
 
                 $('.loadanimation').fadeOut(100);
             }
         });
-    })
+    });
 
     $('.empty').on('click', function() {
 
-        $('.result').html('')
+        $('.result').html('');
 
         $.ajax({
             url: ajaxurl, // defined in admin header -> admin-ajax.php
@@ -33,10 +32,10 @@ $(document).ready(function() {
                 'action': 'empty_media_pool',
             },
             success: function(response) {
-                $('.result').html(JSON.stringify(response))
+                $('.result').html(JSON.stringify(response));
             }
         });
-    })
+    });
 
     $('.get-folder-list').on('click', function(e) {
         e.preventDefault();
@@ -60,7 +59,7 @@ $(document).ready(function() {
                 ul.appendTo(div);
 
                 div.on('changed.jstree', function (e, data) {
-                  $('#ocRootPath').val(data.instance.get_node(data.selected).data.path);
+                    $('#ocRootPath').val(data.instance.get_node(data.selected).data.path);
                 }).jstree();
             }
         });
@@ -68,7 +67,9 @@ $(document).ready(function() {
 
     $('.test-connection').on('click', function(e) {
         e.preventDefault();
-        $('.test-result').html('Testing connection...')
+        var elem = $('.test-result');
+        elem.html('');
+        $('<i/>').addClass('fa').addClass('fa-spin').addClass('fa-cog').appendTo(elem);
         $.ajax({
             url: ajaxurl, // defined in admin header -> admin-ajax.php
             dataType: 'JSON',
@@ -82,29 +83,29 @@ $(document).ready(function() {
                 }
             },
             success: function(response) {
-                $('.test-result').html(response.message)
+                //$('.test-result').html(response.message)
             }
         });
 
         return false;
-    })
-
-    $('.folder-list').jstree();
-})
-
-function printFolder(folder, parent) {
-  var folder_li = $('<li data-path="' + folder.path + '"/>');
-  folder_li.html(folder.name);
-  folder_li.addClass('set-root-folder');
-  folder_li.appendTo(parent);
-
-  if (folder.subs.length > 0) {
-    var ul = $('<ul/>');
-
-    folder.subs.forEach(function(sub) {
-      printFolder(sub, ul);
     });
 
-    ul.appendTo(folder_li);
-  }
+    $('.folder-list').jstree();
+});
+
+function printFolder(folder, parent) {
+    var folder_li = $('<li data-path="' + folder.path + '"/>');
+    folder_li.html(folder.name);
+    folder_li.addClass('set-root-folder');
+    folder_li.appendTo(parent);
+
+    if (folder.subs.length > 0) {
+        var ul = $('<ul/>');
+
+        folder.subs.forEach(function(sub) {
+            printFolder(sub, ul);
+        });
+
+        ul.appendTo(folder_li);
+    }
 }
