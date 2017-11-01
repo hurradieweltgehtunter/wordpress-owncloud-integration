@@ -8,7 +8,7 @@ $(document).ready(function() {
             dataType: 'JSON',
             method: 'POST',
             data: {
-                'action': 'get_files',
+                action: 'get_files'
             },
             success: function(response) {
                 $.each(response.log, function(k, message) {
@@ -21,7 +21,6 @@ $(document).ready(function() {
     });
 
     $('.empty').on('click', function() {
-
         $('.result').html('');
 
         $.ajax({
@@ -29,7 +28,7 @@ $(document).ready(function() {
             dataType: 'JSON',
             method: 'POST',
             data: {
-                'action': 'empty_media_pool',
+                action: 'empty_media_pool'
             },
             success: function(response) {
                 $('.result').html(JSON.stringify(response));
@@ -40,7 +39,9 @@ $(document).ready(function() {
     $('.get-folder-list').on('click', function(e) {
         e.preventDefault();
 
-        $('.folder-list').jstree(true).destroy(true);
+        $('.folder-list')
+            .jstree(true)
+            .destroy(true);
 
         var div = $('.folder-list');
 
@@ -51,16 +52,20 @@ $(document).ready(function() {
             dataType: 'JSON',
             method: 'POST',
             data: {
-                'action': 'get_folder_list',
+                action: 'get_folder_list'
             },
             success: function(res) {
                 var ul = $('<ul/>');
                 printFolder(res.folders, ul);
                 ul.appendTo(div);
 
-                div.on('changed.jstree', function (e, data) {
-                    $('#ocRootPath').val(data.instance.get_node(data.selected).data.path);
-                }).jstree();
+                div
+                    .on('changed.jstree', function(e, data) {
+                        $('#ocRootPath').val(
+                            data.instance.get_node(data.selected).data.path
+                        );
+                    })
+                    .jstree();
             }
         });
     });
@@ -75,7 +80,7 @@ $(document).ready(function() {
             dataType: 'JSON',
             method: 'POST',
             data: {
-                'action': 'test_connection',
+                action: 'test_connection',
                 credentials: {
                     baseUri: $('#ocBaseUri').val(),
                     userName: $('#ocUserName').val(),
