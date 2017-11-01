@@ -59,18 +59,20 @@ $(document).ready(function() {
                 printFolder(res.folders, ul);
                 ul.appendTo(div);
 
-                div.jstree();
+                div.on('changed.jstree', function (e, data) {
+                  $('#ocRootPath').val(data.instance.get_node(data.selected).data.path);
+                }).jstree();
             }
         });
     })
 
-    $('body').on('click', '.set-root-folder', function(e) {
+    /*$('body').on('click', '.set-root-folder', function(e) {
         e.preventDefault();
         var path = $(this).data('path');
         $('#ocRootPath').val(path);
 
         return false;
-    });
+    });*/
 
     $('.test-connection').on('click', function(e) {
         e.preventDefault();
