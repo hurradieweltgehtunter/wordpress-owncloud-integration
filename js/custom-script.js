@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $('.runner').on('click', function() {
-        
+
         $('.result').html('')
         $('.loadanimation').fadeIn(100);
 
@@ -15,14 +15,14 @@ $(document).ready(function() {
                 $.each(response.log, function(k, message) {
                     $('.result').append('<div>' + message + '</div>');
                 })
-                
+
                 $('.loadanimation').fadeOut(100);
             }
         });
     })
 
     $('.empty').on('click', function() {
-        
+
         $('.result').html('')
 
         $.ajax({
@@ -37,6 +37,34 @@ $(document).ready(function() {
             }
         });
     })
+
+    $('.get-folder-list').on('click', function(e) {
+        e.preventDefault();
+
+        $('.folder-list').jstree(true).destroy(true);
+
+        var div = $('.folder-list');
+
+        div.html('');
+
+        $.ajax({
+            url: ajaxurl, // defined in admin header -> admin-ajax.php
+            dataType: 'JSON',
+            method: 'POST',
+            data: {
+                'action': 'get_folder_list',
+            },
+            success: function(res) {
+                var ul = $('<ul/>');
+                printFolder(res.folders, ul);
+                ul.appendTo(div);
+
+                div.on('changed.jstree', function (e, data) {
+                  $('#ocRootPath').val(data.instance.get_node(data.selected).data.path);
+                }).jstree();
+            }
+        });
+    });
 
     $('.test-connection').on('click', function(e) {
         e.preventDefault();
@@ -60,4 +88,23 @@ $(document).ready(function() {
 
         return false;
     })
+
+    $('.folder-list').jstree();
 })
+
+function printFolder(folder, parent) {
+  var folder_li = $('<li data-path="' + folder.path + '"/>');
+  folder_li.html(folder.name);
+  folder_li.addClass('set-root-folder');
+  folder_li.appendTo(parent);
+
+  if (folder.subs.length > 0) {
+    var ul = $('<ul/>');
+
+    folder.subs.forEach(function(sub) {
+      printFolder(sub, ul);
+    });
+
+    ul.appendTo(folder_li);
+  }
+}
