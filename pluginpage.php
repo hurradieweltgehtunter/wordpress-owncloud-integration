@@ -112,7 +112,7 @@ class PluginPage
               <div class="oc-circle l4 s2 el8"></div>
               <div class="oc-circle l4 s3 el9"></div>
               <div class="oc-headline">
-                My Settings
+                wordpress-owncloud-integration
               </div>
           </div>
             <form method="POST">
