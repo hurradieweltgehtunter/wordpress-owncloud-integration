@@ -91,14 +91,10 @@ class PluginPage
             $this->options['password'] = $_POST['ocPassword'];
         }
 
-<<<<<<< HEAD
         if (isset($_POST['ocRootPath'])) {
             update_option('ocRootPath', $_POST['ocRootPath']);
             $this->options['rootPath'] = $_POST['ocRootPath'];
         }
-
-=======
->>>>>>> Add rootFolder setting
         ?>
         <div class="wrap">
             <div class="oc">
@@ -182,14 +178,11 @@ class PluginPage
                     </tbody>
                 </table>
             </form>
-<<<<<<< HEAD
-            <br>
 
-=======
             <button class="get-folder-list">Get folder list</button>
             <button class="runner">Run sync</button>
             <button class="empty">Empty media pool</button>
->>>>>>> Add rootFolder setting
+
             <div class="sk-folding-cube loadanimation hidden">
                 <div class="sk-cube1 sk-cube"></div>
                 <div class="sk-cube2 sk-cube"></div>
@@ -197,8 +190,6 @@ class PluginPage
                 <div class="sk-cube3 sk-cube"></div>
             </div>
             <div class="result"></div>
-<<<<<<< HEAD
-=======
 
             <div class="oc">
                 <div class="oc-circle l1 s1 el1"></div>
@@ -214,8 +205,6 @@ class PluginPage
                 <div class="oc-circle l4 s2 el8"></div>
                 <div class="oc-circle l4 s3 el9"></div>
             </div>
-
->>>>>>> Add rootFolder setting
         </div>
         <?php
     }
