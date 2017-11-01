@@ -108,37 +108,28 @@ class PluginPage
                         <tr>
                             <th scope="row"><label for="ocBaseUri">ownCloud URL</label></th>
                             <td><input name="ocBaseUri" type="text" id="ocBaseUri" value="<?php echo $this->options['baseUri']; ?>" class="regular-text">
-                                <p class="description">
-                                    <?php _e('URL to your ownCloud instance', 'wordpress-owncloud-integration') ?>
-                                </p>
+                                <p class="description">Deine ownCloud URL</p>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row"><label for="ocUserName">ocUsername</label></th>
                             <td><input name="ocUserName" type="text" id="ocUserName" value="<?php echo $this->options['userName']; ?>" class="regular-text">
-                                <p class="description">
-                                    <?php _e('Username', 'wordpress-owncloud-integration') ?>
-                                </p>
+                                <p class="description">Username</p>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row"><label for="ocPassword">ocPassword</label></th>
                             <td><input name="ocPassword" type="password" id="ocPassword" value="<?php echo $this->options['password']; ?>" class="regular-text">
-                                <p class="description">
-                                    <?php _e('App password', 'wordpress-owncloud-integration') ?>
-                                </p>
+                                <p class="description">Passwort</p>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row">&nbsp;</th>
                             <td>
-                                <button class="test-connection button button-small">
-                                    <i class="fa fa-cloud"></i>
-                                    <?php _e('Test Connection', 'wordpress-owncloud-integration') ?>
-                                </button>
+                                <button class="test-connection button button-small"> <i class="fa fa-cloud"></i> Test Connection</button>
                                 <span class="test-result"></span>
                             </td>
                         </tr>
@@ -147,13 +138,8 @@ class PluginPage
                             <th scope="row"><label for="ocRootPath">ocRootPath</label></th>
                             <td>
                                 <input name="ocRootPath" type="text" id="ocRootPath" value="<?php echo $this->options['rootPath']; ?>" class="regular-text" readonly>
-                                <button class="get-folder-list button button-small">
-                                    <i class="fa fa-folder-open"></i>
-                                    <?php _e('Get Folder List', 'wordpress-owncloud-integration') ?>
-                                </button>
-                                <p class="description">
-                                    <?php _e('Root Path', 'wordpress-owncloud-integration') ?>
-                                </p>
+                                <button class="get-folder-list button button-small"><i class="fa fa-folder-open"></i> Get Folder List</button>
+                                <p class="description">Root Pfad</p>
                                 <div class="folder-list"></div>
                             </td>
                         </tr>
@@ -163,14 +149,8 @@ class PluginPage
                             <td>
                                 <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
                                 <input type="submit" value="Save" class="save button button-success">
-                                <button class="runner button">
-                                    <i class="fa fa-repeat"></i>
-                                    <?php _e('Run sync', 'wordpress-owncloud-integration') ?>
-                                </button>
-                                <button class="empty button button-danger">
-                                    <i class="fa fa-trash"></i>
-                                    <?php _e('Empty media pool', 'wordpress-owncloud-integration') ?>
-                                </button>
+                                <button class="runner button"><i class="fa fa-repeat"></i> Run sync</button>
+                                <button class="empty button button-danger"><i class="fa fa-trash"></i> Empty media pool</button>
                             </td>
                         </tr>
                     </tbody>
@@ -508,19 +488,19 @@ class PluginPage
             if ($response['statusCode'] > 400) {
                 switch($response['statusCode']) {
                     case 401:
-                        echo json_encode(array('status' => 'error', 'message' => __('Username or password was incorrect', 'wordpress-owncloud-integration')));
+                        echo json_encode(array('status' => 'error', 'message' => 'Username or password was incorrect'));
                         break;
 
                     case 404:
-                        echo json_encode(array('status' => 'error', 'message' => __('ownCloud and/or webDav service not reachable. Please check your ownCloud URL', 'wordpress-owncloud-integration')));
+                        echo json_encode(array('status' => 'error', 'message' => 'ownCloud and/or webDav service not reachable. Please check your ownCloud URL'));
                         break;
 
                     default:
-                        echo json_encode(array('status' => 'error', 'message' => __('There was an unknown error.', 'wordpress-owncloud-integration') . '<br />' . nl2br(print_r($response, true))));
+                        echo json_encode(array('status' => 'error', 'message' => 'There was an unknown error. <br />' . nl2br(print_r($response, true))));
                         break;
                 }
             } else {
-                echo json_encode(array('status' => 'success', 'message' => __('Connection could be successfully established.', 'wordpress-owncloud-integration')));
+                echo json_encode(array('status' => 'success', 'message' => 'Connection could be successfully established.'));
             }
         } catch (Exception $e) {
             print_r($e);
