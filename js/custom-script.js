@@ -69,7 +69,7 @@ $(document).ready(function() {
         e.preventDefault();
         var elem = $('.test-result');
         elem.html('');
-        $('<i/>').addClass('fa').addClass('fa-spin').addClass('fa-cog').appendTo(elem);
+        $('<i/>').addClass('fa fa-spin fa-cog').appendTo(elem);
         $.ajax({
             url: ajaxurl, // defined in admin header -> admin-ajax.php
             dataType: 'JSON',
@@ -88,10 +88,10 @@ $(document).ready(function() {
                 var icon = $('<i/>').addClass('fa');
 
                 if (response.message == 'Connection could be successfully established.') {
-                    icon.addClass('fa-check').addClass('icon-green');
+                    icon.addClass('fa-check icon-green');
                 }
                 else {
-                    icon.addClass('fa-exclamation-circle').addClass('icon-red');
+                    icon.addClass('fa-exclamation-circle icon-red');
                 }
 
                 icon.prependTo($('.test-result'));
