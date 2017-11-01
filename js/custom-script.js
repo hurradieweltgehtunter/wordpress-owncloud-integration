@@ -64,15 +64,7 @@ $(document).ready(function() {
                 }).jstree();
             }
         });
-    })
-
-    /*$('body').on('click', '.set-root-folder', function(e) {
-        e.preventDefault();
-        var path = $(this).data('path');
-        $('#ocRootPath').val(path);
-
-        return false;
-    });*/
+    });
 
     $('.test-connection').on('click', function(e) {
         e.preventDefault();
