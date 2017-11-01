@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-01 20:28+0000\n"
+"POT-Creation-Date: 2017-11-01 20:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,6 +16,10 @@ msgstr ""
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:112
 msgid "URL to your ownCloud instance"
+msgstr ""
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:118
+msgid "ocUsername"
 msgstr ""
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:121

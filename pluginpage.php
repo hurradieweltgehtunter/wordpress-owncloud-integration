@@ -115,7 +115,7 @@ class PluginPage
                         </tr>
 
                         <tr>
-                            <th scope="row"><label for="ocUserName">ocUsername</label></th>
+                            <th scope="row"><label for="ocUserName"><?php _e('ocUsername', 'wordpress-owncloud-integration') ?></label></th>
                             <td><input name="ocUserName" type="text" id="ocUserName" value="<?php echo $this->options['userName']; ?>" class="regular-text">
                                 <p class="description">
                                     <?php _e('Username', 'wordpress-owncloud-integration') ?>
