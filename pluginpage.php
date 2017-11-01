@@ -151,9 +151,9 @@ class PluginPage
                 <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
                 <input type="submit" value="Save" class="button button-primary button-large">
             </form>
-
-            <button class="runner">Run sync</button>
-            <button class="empty">Empty media pool</button>
+            <br>
+            <button class="runner button button-primary button-large">Run sync</button>
+            <button class="empty button button-primary button-large">Empty media pool</button>
             <div class="sk-folding-cube loadanimation hidden">
               <div class="sk-cube1 sk-cube"></div>
               <div class="sk-cube2 sk-cube"></div>
