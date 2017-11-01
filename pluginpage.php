@@ -133,7 +133,7 @@ class PluginPage
                             <td>
                                 <button class="test-connection button button-small"> <i class="fa fa-cloud"></i> Test Connection</button>
 
-                                <div class="test-result"></div>
+                                <span class="test-result"></span>
                             </td>
                         </tr>
 

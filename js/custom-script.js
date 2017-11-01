@@ -83,7 +83,18 @@ $(document).ready(function() {
                 }
             },
             success: function(response) {
-                //$('.test-result').html(response.message)
+                $('.test-result').html(response.message);
+
+                var icon = $('<i/>').addClass('fa');
+
+                if (response.message == 'Connection could be successfully established.') {
+                    icon.addClass('fa-check').addClass('icon-green');
+                }
+                else {
+                    icon.addClass('fa-exclamation-circle').addClass('icon-red');
+                }
+
+                icon.prependTo($('.test-result'));
             }
         });
 
