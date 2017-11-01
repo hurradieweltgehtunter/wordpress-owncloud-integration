@@ -123,7 +123,6 @@ $(document).ready(function() {
         var elem = $('.test-result');
         elem.html('');
         $('<i/>').addClass('fa fa-spin fa-cog connection-icon').appendTo(elem);
-
         $.ajax({
             url: ajaxurl, // defined in admin header -> admin-ajax.php
             dataType: 'JSON',
