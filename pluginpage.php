@@ -121,7 +121,7 @@ class PluginPage
 
                         <tr>
                             <th scope="row"><label for="ocPassword">ocPassword</label></th>
-                            <td><input name="ocPassword" type="text" id="ocPassword" value="<?php echo $this->options['password']; ?>" class="regular-text">
+                            <td><input name="ocPassword" type="password" id="ocPassword" value="<?php echo $this->options['password']; ?>" class="regular-text">
                                 <p class="description">Passwort</p>
                             </td>
                         </tr>
