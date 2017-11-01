@@ -1,6 +1,7 @@
 <?php
 use Sabre\DAV\Client;
 define('DEBUG', false);
+
 class PluginPage
 {
     /**
@@ -49,7 +50,7 @@ class PluginPage
      */
     public function add_plugin_page()
     {
-        add_menu_page(
+        add_options_page(
             'OC Access',
             'OC Access Options',
             'administrator',
@@ -141,32 +142,40 @@ class PluginPage
                         </tr>
 
                         <tr>
-                            <th scope="row"><label for="ocRootPath">ocRootPath</label></th>
-                            <td>
-                                <input name="ocRootPath" type="text" id="ocRootPath" value="<?php echo $this->options['rootPath']; ?>" class="regular-text" readonly>
-                                <button class="get-folder-list button button-primary button-small">Get Folder List</button>
-                                <p class="description">Root Pfad</p>
-                                <div class="folder-list"></div>
-                            </td>
-                        </tr>
-
-                        <tr>
                             <th scope="row">&nbsp;</th>
                             <td>
-                                <button class="test-connection button button-primary button-large">Test Connection</button>
+                                <button class="test-connection btn btn-small"> <i class="icon-cloud"></i> Test Connection</button>
 
                                 <div class="test-result"></div>
                             </td>
                         </tr>
+
+                        <tr>
+                            <th scope="row"><label for="ocRootPath">ocRootPath</label></th>
+                            <td>
+                                <input name="ocRootPath" type="text" id="ocRootPath" value="<?php echo $this->options['rootPath']; ?>" class="regular-text" readonly>
+                                <button class="get-folder-list btn btn-small"><i class="icon-folder-open"></i> Get Folder List</button>
+                                <p class="description">Root Pfad</p>
+                                <div class="folder-list"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                          <th scope="row"></th>
+                          <td>
+                            <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
+                            <input type="submit" value="Save" class="save btn btn-success">
+                            <button class="runner btn"><i class="icon-repeat"></i> Run sync</button>
+                            <button class="empty btn btn-danger"><i class="icon-trash icon-large"></i> Empty media pool</button>
+                          </td>
+                        </tr>
+
                     </tbody>
                 </table>
 
-                <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
-                <input type="submit" value="Save" class="button button-primary button-large">
+
             </form>
             <br>
-            <button class="runner button button-primary button-large">Run sync</button>
-            <button class="empty button button-primary button-large">Empty media pool</button>
+
             <div class="sk-folding-cube loadanimation hidden">
               <div class="sk-cube1 sk-cube"></div>
               <div class="sk-cube2 sk-cube"></div>
@@ -191,6 +200,9 @@ class PluginPage
         wp_enqueue_script('my_custom_script', plugin_dir_url(__FILE__) . '/js/custom-script.js', array('jquery'), 1, true);
 
         wp_enqueue_style( 'jsTree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css' );
+        wp_enqueue_style( 'bootstrap', 'https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css' );
+        wp_enqueue_style( 'font-awesome', 'https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css' );
+
         wp_enqueue_style( 'style', plugin_dir_url(__FILE__) . '/css/styles.css' );
     }
 
