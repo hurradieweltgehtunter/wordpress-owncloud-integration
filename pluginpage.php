@@ -106,7 +106,7 @@ class PluginPage
                 <table class="form-table">
                     <tbody>
                         <tr>
-                            <th scope="row"><label for="ocBaseUri">ownCloud URL</label></th>
+                            <th scope="row"><label for="ocBaseUri"><?php _e('ownCloud URL', 'wordpress-owncloud-integration') ?></label></th>
                             <td><input name="ocBaseUri" type="text" id="ocBaseUri" value="<?php echo $this->options['baseUri']; ?>" class="regular-text">
                                 <p class="description">
                                     <?php _e('URL to your ownCloud instance', 'wordpress-owncloud-integration') ?>
