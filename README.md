@@ -1,4 +1,6 @@
 # wordpress-owncloud-integration
+![Status](https://img.shields.io/badge/Status-work%20in%20progress-red.svg)
+
 Connect your ownCloud to your wordpress instance and use it as media pool
 NOTE: Work in progress. Not meant for use in production environments.
 
