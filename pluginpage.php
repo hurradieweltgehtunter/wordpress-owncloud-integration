@@ -98,7 +98,23 @@ class PluginPage
 
         ?>
         <div class="wrap">
-            <h1>My Settings</h1>
+          <div class="oc">
+              <div class="oc-circle l1 s1 el1"></div>
+
+              <div class="oc-circle l2 s3 el2"></div>
+              <div class="oc-circle l2 s2 el3"></div>
+              <div class="oc-circle l2 s2 el4"></div>
+
+              <div class="oc-circle l3 s2 el5"></div>
+              <div class="oc-circle l3 s2 el6"></div>
+
+              <div class="oc-circle l4 s3 el7"></div>
+              <div class="oc-circle l4 s2 el8"></div>
+              <div class="oc-circle l4 s3 el9"></div>
+              <div class="oc-headline">
+                My Settings
+              </div>
+          </div>
             <form method="POST">
 
                 <table class="form-table">
@@ -159,20 +175,7 @@ class PluginPage
             </div>
             <div class="result"></div>
 
-            <div class="oc">
-                <div class="oc-circle l1 s1 el1"></div>
 
-                <div class="oc-circle l2 s3 el2"></div>
-                <div class="oc-circle l2 s2 el3"></div>
-                <div class="oc-circle l2 s2 el4"></div>
-
-                <div class="oc-circle l3 s2 el5"></div>
-                <div class="oc-circle l3 s2 el6"></div>
-
-                <div class="oc-circle l4 s3 el7"></div>
-                <div class="oc-circle l4 s2 el8"></div>
-                <div class="oc-circle l4 s3 el9"></div>
-            </div>
 
         </div>
         <?php
