@@ -64,7 +64,6 @@ class PluginPage
      */
     public function create_admin_page()
     {
-
         if (!current_user_can('manage_options')) {
             wp_die('Unauthorized user');
         }
@@ -99,25 +98,24 @@ class PluginPage
 
         ?>
         <div class="wrap">
-          <div class="oc">
-              <div class="oc-circle l1 s1 el1"></div>
+            <div class="oc">
+                <div class="oc-circle l1 s1 el1"></div>
 
-              <div class="oc-circle l2 s3 el2"></div>
-              <div class="oc-circle l2 s2 el3"></div>
-              <div class="oc-circle l2 s2 el4"></div>
+                <div class="oc-circle l2 s3 el2"></div>
+                <div class="oc-circle l2 s2 el3"></div>
+                <div class="oc-circle l2 s2 el4"></div>
 
-              <div class="oc-circle l3 s2 el5"></div>
-              <div class="oc-circle l3 s2 el6"></div>
+                <div class="oc-circle l3 s2 el5"></div>
+                <div class="oc-circle l3 s2 el6"></div>
 
-              <div class="oc-circle l4 s3 el7"></div>
-              <div class="oc-circle l4 s2 el8"></div>
-              <div class="oc-circle l4 s3 el9"></div>
-              <div class="oc-headline">
-                wordpress-owncloud-integration
-              </div>
-          </div>
+                <div class="oc-circle l4 s3 el7"></div>
+                <div class="oc-circle l4 s2 el8"></div>
+                <div class="oc-circle l4 s3 el9"></div>
+                <div class="oc-headline">
+                    wordpress-owncloud-integration
+                </div>
+            </div>
             <form method="POST">
-
                 <table class="form-table">
                     <tbody>
                         <tr>
@@ -145,7 +143,6 @@ class PluginPage
                             <th scope="row">&nbsp;</th>
                             <td>
                                 <button class="test-connection button button-small"> <i class="fa fa-cloud"></i> Test Connection</button>
-
                                 <span class="test-result"></span>
                             </td>
                         </tr>
@@ -159,33 +156,28 @@ class PluginPage
                                 <div class="folder-list"></div>
                             </td>
                         </tr>
-                        <tr>
-                          <th scope="row"></th>
-                          <td>
-                            <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
-                            <input type="submit" value="Save" class="save button button-success">
-                            <button class="runner button"><i class="fa fa-repeat"></i> Run sync</button>
-                            <button class="empty button button-danger"><i class="fa fa-trash"></i> Empty media pool</button>
-                          </td>
-                        </tr>
 
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
+                                <input type="submit" value="Save" class="save button button-success">
+                                <button class="runner button"><i class="fa fa-repeat"></i> Run sync</button>
+                                <button class="empty button button-danger"><i class="fa fa-trash"></i> Empty media pool</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
-
-
             </form>
             <br>
 
             <div class="sk-folding-cube loadanimation hidden">
-              <div class="sk-cube1 sk-cube"></div>
-              <div class="sk-cube2 sk-cube"></div>
-              <div class="sk-cube4 sk-cube"></div>
-              <div class="sk-cube3 sk-cube"></div>
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
             </div>
             <div class="result"></div>
-
-
-
         </div>
         <?php
     }
