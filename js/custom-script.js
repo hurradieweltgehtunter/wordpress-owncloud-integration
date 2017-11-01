@@ -21,7 +21,7 @@ $(document).ready(function() {
         });
     });
 
-    $('.empty').on('click', function() {
+    $('.empty').on('click', function(e) {
         e.preventDefault();
         $('.result').html('');
 
