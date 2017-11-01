@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: OC Access\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-01 19:33+0000\n"
+"PO-Revision-Date: 2017-11-01 19:36+0000\n"
+"Last-Translator: admin <yannik@localhost.net>\n"
+"Language-Team: German\n"
+"Language: de-DE\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco - https://localise.biz/"
+
+#: pluginpage.php:112
+msgid "URL to your ownCloud instance"
+msgstr "URL zu deiner ownCloud-Instanz"
+
+#: pluginpage.php:121
+msgid "Username"
+msgstr "Benutzername"
+
+#: pluginpage.php:130
+msgid "App password"
+msgstr "App-Passwort"
+
+#: pluginpage.php:140
+msgid "Test Connection"
+msgstr "Teste Verbindung"
+
+#: pluginpage.php:152
+msgid "Get Folder List"
+msgstr "Ordnerliste holen"
+
+#: pluginpage.php:155
+msgid "Root Path"
+msgstr "Wurzelverzeichnis"
+
+#: pluginpage.php:168
+msgid "Run sync"
+msgstr "Starte Synchronisation"
+
+#: pluginpage.php:172
+msgid "Empty media pool"
+msgstr "Leere Medienpool"
+
+#: pluginpage.php:511
+msgid "Username or password was incorrect"
+msgstr "Benutzername oder Passwort falsch"
+
+#: pluginpage.php:515
+msgid ""
+"ownCloud and/or webDav service not reachable. Please check your ownCloud URL"
+msgstr ""
+"ownCloud und/oder WebDAV-Service nicht erreichbar. Prüfe deine ownCloud-URL."
+
+#: pluginpage.php:519
+msgid "There was an unknown error."
+msgstr "Unbekannter Fehler aufgetreten."
+
+#: pluginpage.php:523
+msgid "Connection could be successfully established."
+msgstr "Verbindung erfolgreich hergestellt."
+
+#. Name of the plugin
+msgid "OC Access"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Connect your ownCloud to your wordpress instance and use it as media pool"
+msgstr ""
+"Verbinde deine ownCloud mit deiner WordPress-Instanz und nutze diese als "
+"Medienspeicher."
+
+#. URI of the plugin
+msgid "https://github.com/hurradieweltgehtunter/wordpress-owncloud-integration"
+msgstr ""
+
+#. Author of the plugin
+msgid "Florian Lenz, Yannik Bürkle, Daniel Schwarz"
+msgstr ""

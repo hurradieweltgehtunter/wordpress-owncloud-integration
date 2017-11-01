@@ -11,6 +11,11 @@
 
 use Sabre\DAV\Client;
 
+add_action('init', 'load_language');
+function load_language() {
+    load_plugin_textdomain('wordpress-owncloud-integration', FALSE, basename(dirname(__FILE__)) . '/languages/');
+}
+
 
 // removes the "Add media" button from posts
 function disableMediaButtonsInPost(){
