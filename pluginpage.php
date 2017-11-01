@@ -144,7 +144,7 @@ class PluginPage
                         </tr>
 
                         <tr>
-                            <th scope="row"><label for="ocRootPath">ocRootPath</label></th>
+                            <th scope="row"><label for="ocRootPath"><?php _e('ocRootPath', 'wordpress-owncloud-integration') ?></label></th>
                             <td>
                                 <input name="ocRootPath" type="text" id="ocRootPath" value="<?php echo $this->options['rootPath']; ?>" class="regular-text" readonly>
                                 <button class="get-folder-list button button-small">

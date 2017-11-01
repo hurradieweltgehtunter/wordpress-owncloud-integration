@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OC Access\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-01 20:19+0000\n"
-"PO-Revision-Date: 2017-11-01 20:20+0000\n"
+"POT-Creation-Date: 2017-11-01 20:26+0000\n"
+"PO-Revision-Date: 2017-11-01 20:26+0000\n"
 "Last-Translator: dansch <Daniel.Schwarz@blackit.de>\n"
 "Language-Team: German\n"
 "Language: de-DE\n"
@@ -13,22 +13,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:165
-msgid "save"
-msgstr "speichern"
-
-#. Name of the plugin
-msgid "OC Access"
-msgstr "OC Access"
-
-#. URI of the plugin
-msgid "https://github.com/hurradieweltgehtunter/wordpress-owncloud-integration"
-msgstr ""
-"https://github.com/hurradieweltgehtunter/wordpress-owncloud-integration"
-
-#. Author of the plugin
-msgid "Florian Lenz, Yannik Bürkle, Daniel Schwarz"
-msgstr "Florian Lenz, Yannik Bürkle, Daniel Schwarz"
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:147
+msgid "ocRootPath"
+msgstr "Wurzelverzeichnis"
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:112
 msgid "URL to your ownCloud instance"
@@ -53,6 +40,10 @@ msgstr "Ordnerliste holen"
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:155
 msgid "Root Path"
 msgstr "Wurzelverzeichnis"
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:165
+msgid "save"
+msgstr "speichern"
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:168
 msgid "Run sync"
@@ -80,9 +71,22 @@ msgstr "Unbekannter Fehler aufgetreten."
 msgid "Connection could be successfully established."
 msgstr "Verbindung erfolgreich hergestellt."
 
+#. Name of the plugin
+msgid "OC Access"
+msgstr "OC Access"
+
 #. Description of the plugin
 msgid ""
 "Connect your ownCloud to your wordpress instance and use it as media pool"
 msgstr ""
 "Verbinde deine ownCloud mit deiner WordPress-Instanz und nutze diese als "
 "Medienspeicher."
+
+#. URI of the plugin
+msgid "https://github.com/hurradieweltgehtunter/wordpress-owncloud-integration"
+msgstr ""
+"https://github.com/hurradieweltgehtunter/wordpress-owncloud-integration"
+
+#. Author of the plugin
+msgid "Florian Lenz, Yannik Bürkle, Daniel Schwarz"
+msgstr "Florian Lenz, Yannik Bürkle, Daniel Schwarz"
