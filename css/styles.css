@@ -1,3 +1,7 @@
+.wp-core-ui .button-danger {
+  background-color: #cc4036;
+  color: #ffffff;
+}
 .oc {
   position: relative;
   background-color: #1c283c;
