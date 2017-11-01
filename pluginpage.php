@@ -162,7 +162,7 @@ class PluginPage
                             <th scope="row"></th>
                             <td>
                                 <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
-                                <input type="submit" value="Save" class="save button button-success">
+                                <input type="submit" value="<?php _e('save', 'wordpress-owncloud-integration') ?>" class="save button button-success">
                                 <button class="runner button">
                                     <i class="fa fa-repeat"></i>
                                     <?php _e('Run sync', 'wordpress-owncloud-integration') ?>
