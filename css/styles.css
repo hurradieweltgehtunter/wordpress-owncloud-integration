@@ -201,3 +201,11 @@
     opacity: 0;
   }
 }
+
+.icon-green {
+    color: green;
+}
+
+.icon-red {
+    color: red;
+}
