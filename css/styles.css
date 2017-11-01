@@ -204,10 +204,14 @@
 
 .icon-green {
     color: green;
+    margin-right: 0.25em;
+    margin-left: 0.5em;
 }
 
 .icon-red {
     color: red;
+    margin-right: 0.25em;
+    margin-left: 0.5em;
 }
 
 .connection-icon {
