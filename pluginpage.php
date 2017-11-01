@@ -329,7 +329,7 @@ class PluginPage
 
         $folders = array(
             'name' => 'ownCloud Root',
-            'path' => '/remote.php/webdav/',
+            'path' => '/owncloud/remote.php/webdav/',
             'subs' => array(),
         );
 
