@@ -42,8 +42,8 @@ class PluginPage
     public function add_plugin_page()
     {
         add_options_page(
-            'OC Access',
-            'OC Access Options',
+            'ownCloud Access',
+            'ownCloud Access',
             'administrator',
             __FILE__,
             array( $this, 'create_admin_page' )
