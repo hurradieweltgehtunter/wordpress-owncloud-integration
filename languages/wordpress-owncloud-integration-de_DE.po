@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OC Access\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-01 20:38+0000\n"
-"PO-Revision-Date: 2017-11-01 20:40+0000\n"
+"POT-Creation-Date: 2017-11-01 20:44+0000\n"
+"PO-Revision-Date: 2017-11-01 20:44+0000\n"
 "Last-Translator: dansch <Daniel.Schwarz@blackit.de>\n"
 "Language-Team: German\n"
 "Language: de-DE\n"
@@ -13,20 +13,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:449
-#, php-format
-msgid "%s already existing and changed; overwriting"
-msgstr "%s existiert bereits wurde aber verändert; überschreiben"
-
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:455
-#, php-format
-msgid "%s already existing and not changed; do nothing"
-msgstr "%s existiert bereits und wurde nicht verändert; mache nichts"
-
-#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:464
-#, php-format
-msgid "%s is new; inserting"
-msgstr "%s ist neu; hinzufügen"
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:493
+msgid "successfully deleted"
+msgstr "erfolgreich gelöscht"
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:109
 msgid "ownCloud URL"
@@ -79,6 +68,21 @@ msgstr "Starte Synchronisation"
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:172
 msgid "Empty media pool"
 msgstr "Leere Medienpool"
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:449
+#, php-format
+msgid "%s already existing and changed; overwriting"
+msgstr "%s existiert bereits wurde aber verändert; überschreiben"
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:455
+#, php-format
+msgid "%s already existing and not changed; do nothing"
+msgstr "%s existiert bereits und wurde nicht verändert; mache nichts"
+
+#: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:464
+#, php-format
+msgid "%s is new; inserting"
+msgstr "%s ist neu; hinzufügen"
 
 #: home/dansch/Projekte/owncloud/github/wordpress-owncloud-integration/pluginpage.php:522
 msgid "Username or password was incorrect"
