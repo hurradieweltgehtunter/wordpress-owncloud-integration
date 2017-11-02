@@ -172,7 +172,7 @@ function printFolder(folder, parent) {
 
         ul.appendTo(folder_li);
     }
-})
+}
 
 function printFolder(folder, depth, div) {
     folder.subs.forEach(function(sub) {
