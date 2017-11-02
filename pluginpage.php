@@ -13,8 +13,9 @@ class PluginPage
      */
     public function __construct()
     {
+        include 'vendor/autoload.php';
+
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
-        // add_action( 'admin_init', array( $this, 'page_init' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'page_enqueue' ));
 
         add_filter( 'attachment_fields_to_edit', array($this, 'add_custom_attachment_fields'), 10, 2 );
@@ -30,6 +31,14 @@ class PluginPage
         $this->options['userName'] = get_option('ocUserName');
         $this->options['password'] = get_option('ocPassword');
         $this->options['depth'] = 1;
+
+        $settings = array(
+            'baseUri' => $this->options['baseUri'] . 'remote.php/webdav/',
+            'userName' => $this->options['userName'],
+            'password' => $this->options['password']
+        );
+
+        $this->client = new Client($settings);
     }
 
     /**
@@ -160,15 +169,15 @@ class PluginPage
      * Add custom fields for attachments
      */
     public function add_custom_attachment_fields( $form_fields, $post ) {
-        $form_fields['oc-syncdate'] = array(
+        $form_fields['oc_syncdate'] = array(
             'label' => 'Synced from owncloud',
             'input' => 'html',
             'html' => get_post_meta( $post->ID, 'oc_syncdate', true )
         );
 
-        $form_fields['oc-etag'] = array(
-            'input' => 'text',
-            'value' => get_post_meta( $post->ID, 'oc-etag', true )
+        $form_fields['oc_etag'] = array(
+            'input' => 'hidden',
+            'value' => get_post_meta( $post->ID, 'oc_etag', true )
         );
      
         return $form_fields;
@@ -178,11 +187,11 @@ class PluginPage
      * Save custom fields for attachments
      */
     function save_custom_attachment_fields( $post, $attachment ) {
-        if( isset( $attachment['oc-syncdate'] ) )
-            update_post_meta( $post['ID'], 'oc_syncdate', $attachment['oc-syncdate'] );
+        if( isset( $attachment['oc_syncdate'] ) )
+            update_post_meta( $post['ID'], 'oc_syncdate', $attachment['oc_syncdate'] );
 
-        if( isset( $attachment['oc-etag'] ) )
-            update_post_meta( $post['ID'], 'oc-etag', $attachment['oc-etag'] );
+        if( isset( $attachment['oc_etag'] ) )
+            update_post_meta( $post['ID'], 'oc_etag', $attachment['oc_etag'] );
      
         return $post;
     }
@@ -244,13 +253,13 @@ class PluginPage
             return false;
     }
 
-
-
-
-    public function insertFile($file, $filestream) {
+    public function insertFile($file) {
         if(DEBUG) echo 'inserting file ' . $file['name']  . "\n";
         if(DEBUG) print_r($file);
-        $upload_file = wp_upload_bits($file['name'], null, $filestream);
+
+        $response = $this->client->request('GET', $file['name']);
+
+        $upload_file = wp_upload_bits($file['name'], null, $response['body']);
 
         if (!$upload_file['error']) {
             $wp_filetype = wp_check_filetype($file['name'], null );
@@ -268,7 +277,7 @@ class PluginPage
                 $attachment_data = wp_generate_attachment_metadata( $attachment_id, $upload_file['file'] );
 
                 update_post_meta( $attachment_id, 'oc_syncdate', date('d.m.Y H:i:s'));
-                update_post_meta( $attachment_id, 'oc-etag', $file['etag']);
+                update_post_meta( $attachment_id, 'oc_etag', $file['etag']);
 
                 wp_update_attachment_metadata( $attachment_id,  $attachment_data );
             }
@@ -281,16 +290,7 @@ class PluginPage
 
     public function AJAX_sync() {
 
-        include 'vendor/autoload.php';
-        $settings = array(
-            'baseUri' => $this->options['baseUri'] . 'remote.php/webdav',
-            'userName' => $this->options['userName'],
-            'password' => $this->options['password']
-        );
-
-        $client = new Client($settings);
-
-        $file_list = $client->propfind('', array(
+        $file_list = $this->client->propfind('', array(
             '{DAV:}getetag',
             '{DAV:}getlastmodified',
             '{DAV:}getetag',
@@ -306,7 +306,6 @@ class PluginPage
             '{DAV:}owner-display-name',
             '{DAV:}share-types'
         ), 1);
-
         $log = array();
 
         foreach($file_list as $uri => $props) {
@@ -329,15 +328,14 @@ class PluginPage
                 if($existingFile !== false) {
                     if(DEBUG) echo 'file ' . $file['name'] . ' exists' . "\n";
 
-                    if(get_post_meta($existingFile->ID, 'oc-etag', true) !== $file['etag']) {
+                    if(get_post_meta($existingFile->ID, 'oc_etag', true) !== $file['etag']) {
                         if(DEBUG) echo 'file ' . $file['name'] . ' has different etag' . "\n";
 
                         // TODO: takeover metadata like alt tags etc. from existing file
 
                         wp_delete_attachment( $existingFile->ID, true );
 
-                        $response = $client->request('GET', $file['name']); 
-                        $this->insertFile($file, $response['body']);
+                        $this->insertFile($file);
 
                         $log[] = $file['name'] . ' already existing and changed; overwriting';
                     } else {
@@ -346,8 +344,7 @@ class PluginPage
                     }
                 } else {
                     if(DEBUG) echo 'file ' . $file['name'] . ' is not existing; inserting' . "\n";
-                    $response = $client->request('GET', $file['name']); 
-                    $this->insertFile($file, $response['body']);
+                    $this->insertFile($file);
                     $log[] = $file['name'] . ' is new; inserting';
                 }
 
@@ -418,7 +415,7 @@ class PluginPage
             }
         } catch (Exception $e) {
             print_r($e);
-            echo json_encode(array('status' => 'error', 'message' => 'asd'));
+            echo json_encode(array('status' => 'error', 'message' => 'There was an unknown error.'));
         }
 
         wp_die();
