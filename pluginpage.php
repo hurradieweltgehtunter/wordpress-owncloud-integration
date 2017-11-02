@@ -320,23 +320,13 @@ class PluginPage
     }
 
     public function AJAX_get_folder_list() {
-        include 'vendor/autoload.php';
 
         $folders = array(
             'name' => 'ownCloud Root',
             'path' => '/owncloud/remote.php/webdav/',
             'subs' => array(),
         );
-
-        $settings = array(
-            'baseUri' => $this->options['baseUri'] . '/remote.php/webdav',
-            'userName' => $this->options['userName'],
-            'password' => $this->options['password']
-        );
-
-        $client = new Client($settings);
-
-        $folders['subs'] = $this->scanFolder($folders['subs'], $folders['path'], $client);
+        $folders['subs'] = $this->scanFolder($folders['subs'], $folders['path']);
 
         echo json_encode(array('folders' => $folders));
         wp_die();
@@ -354,10 +344,9 @@ class PluginPage
      *
      * @param array $folders parent folder array
      * @param string $path relative parent folder path
-     * @param Sabre\DAV\Client $client WebDAV client
      */
-    public function scanFolder($folders, $path, $client) {
-        $response = $client->propfind($path, array(
+    public function scanFolder($folders, $path) {
+        $response = $this->client->propfind($path, array(
             '{DAV:}resourcetype',
         ), 1);
 
@@ -372,7 +361,7 @@ class PluginPage
                 );
 
                 if ($folder['path'] != $path) {
-                    $folder['subs'] = $this->scanFolder($folder['subs'], $folder['path'], $client);
+                    $folder['subs'] = $this->scanFolder($folder['subs'], $folder['path']);
                     array_push($folders, $folder);
                 }
             }
