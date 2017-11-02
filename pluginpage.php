@@ -24,7 +24,7 @@ class PluginPage
 
         //AJAX Functions
         add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
-        add_action( 'wp_ajax_set_root_folder', array( $this, 'AJAX_set_root_folder' ));
+        add_action( 'wp_ajax_set_sync_folder', array( $this, 'AJAX_set_sync_folder' ));
         add_action( 'wp_ajax_get_files', array( $this, 'AJAX_sync' ) );
         add_action( 'wp_ajax_empty_media_pool', array( $this, 'AJAX_empty_media_pool' ));
         add_action( 'wp_ajax_test_connection', array( $this, 'AJAX_test_connection' ));
@@ -332,7 +332,7 @@ class PluginPage
         wp_die();
     }
 
-    public function AJAX_set_root_folder() {
+    public function AJAX_set_sync_folder() {
         update_option('ocRootPath', $_POST['folder']);
 
         echo json_encode(array('success' => true, 'rootPath' => $_POST['folder']));

@@ -107,7 +107,7 @@ $(document).ready(function() {
             dataType: 'JSON',
             method: 'POST',
             data: {
-                'action': 'set_root_folder',
+                'action': 'set_sync_folder',
                 'folder': path
             },
             success: function(response) {
