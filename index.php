@@ -9,24 +9,6 @@
 */
 //TODO update license
 
-use Sabre\DAV\Client;
-
-
-// removes the "Add media" button from posts
-function disableMediaButtonsInPost(){
-    remove_action( 'media_buttons', 'media_buttons' );
-}
-add_action('admin_head', 'disableMediaButtonsInPost');
-
-// prevent any uploads to media pool
-function prevent_upload( $file ) {
-    $file['error'] = 'You cannot upload to the wordpress media pool as you are using ownCloud';
-    return $file;
-}
-add_filter( 'wp_handle_upload_prefilter', 'prevent_upload' );
-
-
-
 require_once('pluginpage.php');
 
 if( is_admin() )
