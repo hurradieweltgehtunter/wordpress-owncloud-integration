@@ -18,9 +18,16 @@
     border-radius: 50%;
     border: 1px solid #1c283c;
     bottom: 0;
+    -webkit-animation-duration: 2s; 
+    animation-duration: 2s;
+    animation-timing-function: ease;
+    -webkit-animation-timing-function: ease;
+    animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+}
 
-    -webkit-animation: animation 2s infinite ease both;
-    animation: animation 2s infinite ease both;
+.oc.animated .oc-circle {
+    animation-name: slide-animation;
 }
 
 .oc .l1 {
@@ -85,22 +92,42 @@
     bottom: 26px;
 }
 
-@-webkit-keyframes SlideIn {
+@-webkit-keyframes slide-animation {
     0% {
         transform: translate(0, 100%);
         opacity: 0;
+        -webkit-filter: blur(2px);
+        -moz-filter: blur(2px);
+        -o-filter: blur(2px);
+        -ms-filter: blur(2px);
+        filter: blur(2px);
     }
     25% {
         transform: translate(0, 0);
         opacity: 1;
+        -webkit-filter: blur(0);
+        -moz-filter: blur(0);
+        -o-filter: blur(0);
+        -ms-filter: blur(0);
+        filter: blur(0);
     }
     75% {
         transform: translate(0, 0);
         opacity: 1;
+        -webkit-filter: blur(0);
+        -moz-filter: blur(0);
+        -o-filter: blur(0);
+        -ms-filter: blur(0);
+        filter: blur(0);
     }
     100% {
         transform: translate(0, -100%);
         opacity: 0;
+        -webkit-filter: blur(2px);
+        -moz-filter: blur(2px);
+        -o-filter: blur(2px);
+        -ms-filter: blur(2px);
+        filter: blur(2px);
     }
 }
 

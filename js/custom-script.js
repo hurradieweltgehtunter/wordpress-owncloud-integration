@@ -1,6 +1,7 @@
 $(document).ready(function() {
     $('.runner').on('click', function() {
         $('.result').html('');
+        $('.oc').addClass('animated');
         $('.loadanimation').fadeIn(100);
 
         $.ajax({
@@ -16,6 +17,7 @@ $(document).ready(function() {
                 });
 
                 $('.loadanimation').fadeOut(100);
+                $('.oc').removeClass('animated');
             }
         });
     });
