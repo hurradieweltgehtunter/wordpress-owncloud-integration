@@ -95,6 +95,7 @@ class PluginPage
             update_option('ocRootPath', $_POST['ocRootPath']);
             $this->options['rootPath'] = $_POST['ocRootPath'];
         }
+
         ?>
         <div class="wrap">
             <div class="oc">
@@ -133,18 +134,8 @@ class PluginPage
 
                         <tr>
                             <th scope="row"><label for="ocPassword">ocPassword</label></th>
-                            <td><input name="ocPassword" type="password" id="ocPassword" value="<?php echo $this->options['password']; ?>" class="regular-text">
+                            <td><input name="ocPassword" type="text" id="ocPassword" value="<?php echo $this->options['password']; ?>" class="regular-text">
                                 <p class="description">Passwort</p>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th scope="row"><label for="ocRootPath">ocRootPath</label></th>
-                            <td>
-                                <input type="text" id="ocRootPath" value="<?php echo $this->options['rootPath']; ?>" class="regular-text" readonly>
-                                <button class="get-folder-list button button-primary button-small">Get Folder List</button>
-                                <p class="description">Root Pfad</p>
-                                <div class="folder-list" style="position: relative;"></div>
                             </td>
                         </tr>
 
@@ -178,10 +169,7 @@ class PluginPage
                     </tbody>
                 </table>
             </form>
-
-            <button class="get-folder-list">Get folder list</button>
-            <button class="runner">Run sync</button>
-            <button class="empty">Empty media pool</button>
+            <br>
 
             <div class="sk-folding-cube loadanimation hidden">
                 <div class="sk-cube1 sk-cube"></div>
@@ -190,21 +178,6 @@ class PluginPage
                 <div class="sk-cube3 sk-cube"></div>
             </div>
             <div class="result"></div>
-
-            <div class="oc">
-                <div class="oc-circle l1 s1 el1"></div>
-
-                <div class="oc-circle l2 s3 el2"></div>
-                <div class="oc-circle l2 s2 el3"></div>
-                <div class="oc-circle l2 s2 el4"></div>
-
-                <div class="oc-circle l3 s2 el5"></div>
-                <div class="oc-circle l3 s2 el6"></div>
-
-                <div class="oc-circle l4 s3 el7"></div>
-                <div class="oc-circle l4 s2 el8"></div>
-                <div class="oc-circle l4 s3 el9"></div>
-            </div>
         </div>
         <?php
     }
@@ -387,30 +360,6 @@ class PluginPage
         $response = $client->propfind($path, array(
             '{DAV:}resourcetype',
         ), 1);
-<<<<<<< HEAD
-=======
-
-        foreach ($response as $uri => $props) {
-            $title = str_replace($path, '', $uri);
-
-            if($props['{DAV:}resourcetype'] !== null) {
-                $folder = array(
-                    'name' => $title,
-                    'path' => $uri,
-                    'subs' => array(),
-                );
-
-                if ($folder['path'] != $path) {
-                    $folder['subs'] = $this->scanFolder($folder['subs'], $folder['path'], $client);
-                    array_push($folders, $folder);
-                }
-            }
-        }
-        return $folders;
-    }
-
-    public function AJAX_sync() {
->>>>>>> Add rootFolder setting
 
         foreach ($response as $uri => $props) {
             $title = str_replace($path, '', $uri);
@@ -488,7 +437,6 @@ class PluginPage
                 } else {
                     if(DEBUG) echo 'file ' . $file['name'] . ' is not existing; inserting' . "\n";
                     $this->insertFile($file);
-                    
                     $log[] = $file['name'] . ' is new; inserting';
                 }
 
