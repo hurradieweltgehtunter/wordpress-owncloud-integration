@@ -22,6 +22,8 @@ class PluginPage
         add_filter( 'attachment_fields_to_edit', array($this, 'add_custom_attachment_fields'), 10, 2 );
         add_filter( 'attachment_fields_to_save', array($this, 'save_custom_attachment_fields'), 10, 2 );
 
+        add_filter('wp_handle_upload_prefilter', array($this, 'sync_to_oc') );
+
         //AJAX Functions
         add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
         add_action( 'wp_ajax_set_sync_folder', array( $this, 'AJAX_set_sync_folder' ));
@@ -367,6 +369,16 @@ class PluginPage
             }
         }
         return $folders;
+    }
+
+    /**
+     * Syncs files uploaded in wordpress to owncloud
+     *
+     * @param array $file uploaded file from $_FILE
+     */
+    public function sync_to_oc($file) {
+        $response = $this->client->request('PUT', $file['name'], file_get_contents($file['tmp_name']));
+        return $file;
     }
 
     public function AJAX_sync() {
