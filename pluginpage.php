@@ -70,6 +70,10 @@ class PluginPage
         // }
 
         if (isset($_POST['ocBaseUri'])) {
+
+            if(substr($_POST['ocBaseUri'], -1) !== '/')
+                $_POST['ocBaseUri'] = $_POST['ocBaseUri'] . '/';
+
             update_option('ocBaseUri', $_POST['ocBaseUri']);
             $this->options['baseUri'] = $_POST['ocBaseUri'];
         }
