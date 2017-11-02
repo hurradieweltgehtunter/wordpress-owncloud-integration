@@ -161,9 +161,9 @@ class PluginPage
                             <th scope="row"></th>
                             <td>
                                 <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
-                                <input type="submit" value="Save" class="save button button-success">
-                                <button class="runner button"><i class="fa fa-repeat"></i> Run sync</button>
-                                <button class="empty button button-danger"><i class="fa fa-trash"></i> Empty media pool</button>
+                                <button type="submit" value="Save" class="save button button-success">Save</button>
+                                <button type="button" class="runner button"><i class="fa fa-repeat"></i> Run sync</button>
+                                <button type="button" class="empty button button-danger"><i class="fa fa-trash"></i> Empty media pool</button>
                             </td>
                         </tr>
                     </tbody>
