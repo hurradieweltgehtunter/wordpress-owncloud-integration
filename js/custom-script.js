@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('.runner').on('click', function() {
+    $('.runner').on('click', function(e) {
         e.preventDefault();
         $('.result').html('');
         $('.oc').addClass('animated');
@@ -23,7 +23,7 @@ $(document).ready(function() {
         });
     });
 
-    $('.empty').on('click', function() {
+    $('.empty').on('click', function(e) {
         e.preventDefault();
         $('.result').html('');
 
