@@ -1,5 +1,6 @@
 $(document).ready(function() {
     $('.runner').on('click', function() {
+        e.preventDefault();
         $('.result').html('');
         $('.oc').addClass('animated');
         $('.loadanimation').fadeIn(100);
@@ -23,6 +24,7 @@ $(document).ready(function() {
     });
 
     $('.empty').on('click', function() {
+        e.preventDefault();
         $('.result').html('');
 
         $.ajax({
@@ -70,54 +72,6 @@ $(document).ready(function() {
                     .jstree();
             }
         });
-    });
-
-    $('.get-folder-list').on('click', function(e) {
-        e.preventDefault();
-
-        var div = $('.folder-list');
-
-        div.html('');
-
-        $.ajax({
-            url: ajaxurl, // defined in admin header -> admin-ajax.php
-            dataType: 'JSON',
-            method: 'POST',
-            data: {
-                'action': 'get_folder_list',
-            },
-            success: function(res) {
-                var root = res.folders;
-
-                var line = $('<div/>')
-                var link = $('<a href="" data-path="' + root.path + '">/</a>');
-                link.addClass('set-root-folder');
-                link.appendTo(line);
-                line.appendTo(div);
-
-                printFolder(root, 0, div);
-            }
-        });
-    })
-
-    $('body').on('click', '.set-root-folder', function(e) {
-        e.preventDefault();
-        var path = $(this).data('path');
-
-        $.ajax({
-            url: ajaxurl, // defined in admin header -> admin-ajax.php
-            dataType: 'JSON',
-            method: 'POST',
-            data: {
-                'action': 'set_sync_folder',
-                'folder': path
-            },
-            success: function(response) {
-                $('#ocRootPath').val(path);
-            }
-        });
-
-        return false;
     });
 
     $('.test-connection').on('click', function(e) {
@@ -174,19 +128,4 @@ function printFolder(folder, parent) {
 
         ul.appendTo(folder_li);
     }
-}
-
-function printFolder(folder, depth, div) {
-    folder.subs.forEach(function(sub) {
-        var line = $('<div/>')
-        var link = $('<a href="" data-path="' + sub.path + '"></a>');
-        link.addClass('set-root-folder');
-        link.html('- '.repeat(depth) + sub.name);
-        link.appendTo(line);
-        line.appendTo(div);
-
-        if (sub.subs.length > 0) {
-            printFolder(sub, depth + 1, div);
-        }
-    });
 }
