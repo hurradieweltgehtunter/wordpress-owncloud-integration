@@ -94,8 +94,8 @@ class PluginPage
         }
 
         if (isset($_POST['ocRootPath'])) {
-            update_option('ocRootPath', $_POST['ocRootPath']);
-            $this->options['rootPath'] = $_POST['ocRootPath'];
+            update_option('ocRootPath', urlencode($_POST['ocRootPath']));
+            $this->options['rootPath'] = urlencode($_POST['ocRootPath']);
         }
 
         ?>
@@ -113,9 +113,6 @@ class PluginPage
                 <div class="oc-circle l4 s3 el7"></div>
                 <div class="oc-circle l4 s2 el8"></div>
                 <div class="oc-circle l4 s3 el9"></div>
-                <div class="oc-headline">
-                    wordpress-owncloud-integration
-                </div>
             </div>
             <form method="POST">
                 <table class="form-table">
@@ -152,7 +149,7 @@ class PluginPage
                         <tr>
                             <th scope="row"><label for="ocRootPath">ocRootPath</label></th>
                             <td>
-                                <input name="ocRootPath" type="text" id="ocRootPath" value="<?php echo $this->options['rootPath']; ?>" class="regular-text" readonly>
+                                <input name="ocRootPath" type="text" id="ocRootPath" value="<?php echo urldecode($this->options['rootPath']); ?>" class="regular-text" readonly>
                                 <button class="get-folder-list button button-small"><i class="fa fa-folder-open"></i> Get Folder List</button>
                                 <p class="description">Root Pfad</p>
                                 <div class="folder-list"></div>
@@ -382,8 +379,7 @@ class PluginPage
     }
 
     public function AJAX_sync() {
-
-        $file_list = $this->client->propfind('', array(
+        $file_list = $this->client->propfind($this->options['rootPath'], array(
             '{DAV:}getetag',
             '{DAV:}getlastmodified',
             '{DAV:}getetag',
