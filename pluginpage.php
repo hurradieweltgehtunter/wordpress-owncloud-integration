@@ -32,10 +32,11 @@ class PluginPage
         add_action( 'wp_ajax_test_connection', array( $this, 'AJAX_test_connection' ));
 
         // Load options
-        $this->options['baseUri'] = get_option('ocBaseUri');
+        $this->options['baseUri'] = get_option('ocBaseUri'); // URL to owncloud instance
+        $this->options['syncPath'] = get_option('ocsyncPath');
         $this->options['userName'] = get_option('ocUserName');
+
         $this->options['password'] = get_option('ocPassword');
-        $this->options['rootPath'] = get_option('ocRootPath');
         $this->options['depth'] = 1;
 
         $settings = array(
@@ -93,9 +94,9 @@ class PluginPage
             $this->options['password'] = $_POST['ocPassword'];
         }
 
-        if (isset($_POST['ocRootPath'])) {
-            update_option('ocRootPath', urlencode($_POST['ocRootPath']));
-            $this->options['rootPath'] = urlencode($_POST['ocRootPath']);
+        if (isset($_POST['ocsyncPath'])) {
+            update_option('ocsyncPath', urlencode($_POST['ocsyncPath']));
+            $this->options['syncPath'] = urlencode($_POST['ocsyncPath']);
         }
 
         ?>
@@ -147,12 +148,12 @@ class PluginPage
                         </tr>
 
                         <tr>
-                            <th scope="row"><label for="ocRootPath">ocRootPath</label></th>
+                            <th scope="row"><label for="ocsyncPath">ocsyncPath</label></th>
                             <td>
-                                <input name="ocRootPath" type="text" id="ocRootPath" value="<?php echo urldecode($this->options['rootPath']); ?>" class="regular-text" readonly>
-                                <button class="get-folder-list button button-small"><i class="fa fa-folder-open"></i> Get Folder List</button>
-                                <p class="description">Root Pfad</p>
-                                <div class="folder-list"></div>
+                                <input name="ocsyncPath" type="text" id="ocsyncPath" value="<?php echo urldecode($this->options['syncPath']); ?>" class="regular-text" readonly>
+                                <div class="folder-list">
+                                    <i class="fa fa-spin fa-cog connection-icon"></i>
+                                </div>        
                             </td>
                         </tr>
 
@@ -319,22 +320,20 @@ class PluginPage
     }
 
     public function AJAX_get_folder_list() {
+        $list = array();
+        $test = $this->test_connection($this->options['baseUri'], $this->options['userName'], $this->options['password']);
 
-        $folders = array(
-            'name' => 'ownCloud Root',
-            'path' => '/owncloud/remote.php/webdav/',
-            'subs' => array(),
-        );
-        $folders['subs'] = $this->scanFolder($folders['subs'], $folders['path']);
-
-        echo json_encode(array('folders' => $folders));
+        if($test['status'] === 'success') {
+            $list = $this->scanFolder(array(), '/owncloud/remote.php/webdav/');    
+        }
+        echo json_encode($list);
         wp_die();
     }
 
     public function AJAX_set_sync_folder() {
-        update_option('ocRootPath', $_POST['folder']);
+        update_option('ocsyncPath', $_POST['folder']);
 
-        echo json_encode(array('success' => true, 'rootPath' => $_POST['folder']));
+        echo json_encode(array('success' => true, 'syncPath' => $_POST['folder']));
         wp_die();
     }
 
@@ -354,13 +353,17 @@ class PluginPage
 
             if($props['{DAV:}resourcetype'] !== null) {
                 $folder = array(
-                    'name' => $title,
-                    'path' => $uri,
-                    'subs' => array(),
-                );
+                        'text' => $title,
+                        'data' => $uri,
+                        'a_attr' => array(
+                            'data-path' => $uri
+                        ),
+                        'path' => $uri,
+                        'children' => array(),
+                    );
 
                 if ($folder['path'] != $path) {
-                    $folder['subs'] = $this->scanFolder($folder['subs'], $folder['path']);
+                    $folder['children'] = $this->scanFolder($folder['children'], $folder['path']);
                     array_push($folders, $folder);
                 }
             }
@@ -379,7 +382,8 @@ class PluginPage
     }
 
     public function AJAX_sync() {
-        $file_list = $this->client->propfind($this->options['rootPath'], array(
+
+        $file_list = $this->client->propfind('Photos', array(
             '{DAV:}getetag',
             '{DAV:}getlastmodified',
             '{DAV:}getetag',
@@ -395,6 +399,7 @@ class PluginPage
             '{DAV:}owner-display-name',
             '{DAV:}share-types'
         ), 1);
+
         $log = array();
 
         foreach($file_list as $uri => $props) {
@@ -469,14 +474,13 @@ class PluginPage
         wp_die();
     }
 
-    public function AJAX_test_connection() {
-
+    private function test_connection($baseUri, $userName, $password) {
         include 'vendor/autoload.php';
 
         $settings = array(
-            'baseUri' => $_POST['credentials']['baseUri'] . 'remote.php/webdav',
-            'userName' => $_POST['credentials']['userName'],
-            'password' => $_POST['credentials']['password'],
+            'baseUri' => $baseUri . 'remote.php/webdav',
+            'userName' => $userName,
+            'password' => $password,
             'depth' => 1
         );
 
@@ -488,24 +492,28 @@ class PluginPage
             if ($response['statusCode'] > 400) {
                 switch($response['statusCode']) {
                     case 401:
-                        echo json_encode(array('status' => 'error', 'message' => 'Username or password was incorrect'));
+                        return array('status' => 'error', 'message' => 'Username or password was incorrect');
                         break;
 
                     case 404:
-                        echo json_encode(array('status' => 'error', 'message' => 'ownCloud and/or webDav service not reachable. Please check your ownCloud URL'));
+                        return array('status' => 'error', 'message' => 'ownCloud and/or webDav service not reachable. Please check your ownCloud URL');
                         break;
 
                     default:
-                        echo json_encode(array('status' => 'error', 'message' => 'There was an unknown error. <br />' . nl2br(print_r($response, true))));
+                        return array('status' => 'error', 'message' => 'There was an unknown error. <br />' . nl2br(print_r($response, true)));
                         break;
                 }
             } else {
-                echo json_encode(array('status' => 'success', 'message' => 'Connection could be successfully established.'));
+                return array('status' => 'success', 'message' => 'Connection could be successfully established.');
             }
         } catch (Exception $e) {
-            print_r($e);
-            echo json_encode(array('status' => 'error', 'message' => 'There was an unknown error.'));
+            return array('status' => 'error', 'message' => 'There was an unknown error.');
         }
+    }
+
+    public function AJAX_test_connection() {
+
+        echo json_encode($this->test_connection($_POST['credentials']['baseUri'], $_POST['credentials']['userName'], $_POST['credentials']['password']));
 
         wp_die();
     }
