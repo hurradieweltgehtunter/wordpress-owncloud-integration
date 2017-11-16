@@ -1,4 +1,28 @@
+function getFolderList() {
+    $.ajax({
+        url: ajaxurl, // defined in admin header -> admin-ajax.php
+        dataType: 'JSON',
+        method: 'POST',
+        data: {
+            action: 'get_folder_list'
+        },
+        success: function(res) {
+            $('.folder-list')
+                .on('changed.jstree', function(e, data) {
+                    $('#ocsyncPath').val(data.instance.get_node(data.selected).data);
+                })
+                .jstree(
+                    { 'core' : {
+                        'data' : res
+                    }
+                });
+        }
+    });
+}
+
 $(document).ready(function() {
+    getFolderList();
+
     $('.runner').on('click', function(e) {
         e.preventDefault();
         $('.result').html('');
@@ -40,40 +64,6 @@ $(document).ready(function() {
         });
     });
 
-    $('.get-folder-list').on('click', function(e) {
-        e.preventDefault();
-
-        $('.folder-list')
-            .jstree(true)
-            .destroy(true);
-
-        var div = $('.folder-list');
-
-        div.html('');
-
-        $.ajax({
-            url: ajaxurl, // defined in admin header -> admin-ajax.php
-            dataType: 'JSON',
-            method: 'POST',
-            data: {
-                action: 'get_folder_list'
-            },
-            success: function(res) {
-                var ul = $('<ul/>');
-                printFolder(res.folders, ul);
-                ul.appendTo(div);
-
-                div
-                    .on('changed.jstree', function(e, data) {
-                        $('#ocRootPath').val(
-                            data.instance.get_node(data.selected).data.path
-                        );
-                    })
-                    .jstree();
-            }
-        });
-    });
-
     $('.test-connection').on('click', function(e) {
         e.preventDefault();
         var elem = $('.test-result');
@@ -109,8 +99,6 @@ $(document).ready(function() {
 
         return false;
     });
-
-    $('.folder-list').jstree();
 });
 
 function printFolder(folder, parent) {
