@@ -26,13 +26,14 @@ class PluginPage
 
         //AJAX Functions
         add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
-        add_action( 'wp_ajax_set_sync_folder', array( $this, 'AJAX_set_sync_folder' ));
         add_action( 'wp_ajax_get_files', array( $this, 'AJAX_sync' ) );
         add_action( 'wp_ajax_empty_media_pool', array( $this, 'AJAX_empty_media_pool' ));
         add_action( 'wp_ajax_test_connection', array( $this, 'AJAX_test_connection' ));
 
         // Load options
         $this->options['baseUri'] = get_option('ocBaseUri'); // URL to owncloud instance
+        $this->options['urlParsed'] = parse_url($this->options['baseUri']);
+        $this->options['webdavSlug'] = 'remote.php/webdav/';
         $this->options['syncPath'] = get_option('ocsyncPath');
         $this->options['userName'] = get_option('ocUserName');
 
@@ -40,7 +41,7 @@ class PluginPage
         $this->options['depth'] = 1;
 
         $settings = array(
-            'baseUri' => $this->options['baseUri'] . 'remote.php/webdav/',
+            'baseUri' => $this->options['baseUri'] . $this->options['webdavSlug'],
             'userName' => $this->options['userName'],
             'password' => $this->options['password']
         );
@@ -95,8 +96,9 @@ class PluginPage
         }
 
         if (isset($_POST['ocsyncPath'])) {
-            update_option('ocsyncPath', urlencode($_POST['ocsyncPath']));
-            $this->options['syncPath'] = urlencode($_POST['ocsyncPath']);
+            $_POST['ocsyncPath'] = str_replace($this->options['urlParsed']['path'] . $this->options['webdavSlug'],'', $_POST['ocsyncPath']);
+            update_option('ocsyncPath', $_POST['ocsyncPath']);
+            $this->options['syncPath'] = $_POST['ocsyncPath'];
         }
 
         ?>
@@ -119,23 +121,25 @@ class PluginPage
                 <table class="form-table">
                     <tbody>
                         <tr>
-                            <th scope="row"><label for="ocBaseUri">ownCloud URL</label></th>
+                            <th scope="row">
+                                <label for="ocBaseUri">ownCloud URL</label>
+                            </th>
                             <td><input name="ocBaseUri" type="text" id="ocBaseUri" value="<?php echo $this->options['baseUri']; ?>" class="regular-text">
-                                <p class="description">Deine ownCloud URL</p>
+                                <p class="description">URL to your ownCloud instance</p>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row"><label for="ocUserName">ocUsername</label></th>
                             <td><input name="ocUserName" type="text" id="ocUserName" value="<?php echo $this->options['userName']; ?>" class="regular-text">
-                                <p class="description">Username</p>
+                                <p class="description">Username as set in "App-Passwords"</p>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row"><label for="ocPassword">ocPassword</label></th>
                             <td><input name="ocPassword" type="text" id="ocPassword" value="<?php echo $this->options['password']; ?>" class="regular-text">
-                                <p class="description">Passwort</p>
+                                <p class="description">Password as set in "App-Passwords"</p>
                             </td>
                         </tr>
 
@@ -150,7 +154,7 @@ class PluginPage
                         <tr>
                             <th scope="row"><label for="ocsyncPath">ocsyncPath</label></th>
                             <td>
-                                <input name="ocsyncPath" type="text" id="ocsyncPath" value="<?php echo urldecode($this->options['syncPath']); ?>" class="regular-text" readonly>
+                                <input name="ocsyncPath" type="text" id="ocsyncPath" value="<?php echo $this->options['syncPath']; ?>" class="regular-text" readonly>
                                 <div class="folder-list">
                                     <i class="fa fa-spin fa-cog connection-icon"></i>
                                 </div>        
@@ -288,7 +292,7 @@ class PluginPage
         if(DEBUG) echo 'inserting file ' . $file['name']  . "\n";
         if(DEBUG) print_r($file);
 
-        $response = $this->client->request('GET', $file['name']);
+        $response = $this->client->request('GET', $this->options['syncPath'] . $file['name']);
 
         $upload_file = wp_upload_bits($file['name'], null, $response['body']);
 
@@ -324,16 +328,10 @@ class PluginPage
         $test = $this->test_connection($this->options['baseUri'], $this->options['userName'], $this->options['password']);
 
         if($test['status'] === 'success') {
-            $list = $this->scanFolder(array(), '/owncloud/remote.php/webdav/');    
+
+            $list = $this->scanFolder(array(), $this->options['urlParsed']['path'] . $this->options['webdavSlug']);    
         }
         echo json_encode($list);
-        wp_die();
-    }
-
-    public function AJAX_set_sync_folder() {
-        update_option('ocsyncPath', $_POST['folder']);
-
-        echo json_encode(array('success' => true, 'syncPath' => $_POST['folder']));
         wp_die();
     }
 
@@ -401,10 +399,9 @@ class PluginPage
         ), 1);
 
         $log = array();
-
         foreach($file_list as $uri => $props) {
             $file = array(
-                'name' => str_replace('/owncloud/remote.php/webdav/', '', $uri),
+                'name' => str_replace('/', '', strrchr($uri, '/')),
                 'etag' => str_replace('"', '', $props['{DAV:}getetag']),
                 'lastmodified' => $props['{DAV:}getlastmodified'],
                 'type' => $type,
