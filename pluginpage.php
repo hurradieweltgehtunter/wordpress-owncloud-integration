@@ -44,9 +44,10 @@ class PluginPage
         add_filter( 'attachment_fields_to_save', array($this, 'save_custom_attachment_fields'), 10, 2 );
 
         if ($this->options['syncbothways'] === '1') {
-            add_filter('wp_handle_upload', array($this, 'sync_to_oc') );    
+            add_filter('wp_handle_upload', array($this, 'sync_to_oc') );
+            add_action( 'delete_attachment', array($this, 'delete_from_oc') );   
         }
-        
+
         //AJAX Functions
         add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
         add_action( 'wp_ajax_get_files', array( $this, 'AJAX_sync' ) );
@@ -409,6 +410,18 @@ class PluginPage
         $response = $this->client->request('PUT', basename($file['url']), $rfile);
 
         return $file;
+    }
+
+    /**
+     * Deletes a file from ownCloud if deleted in WP
+     *
+     * @param array $file parameters of saved file (file abs path, url, mime type)
+     */
+    public function delete_from_oc($postId) {
+        if ('attachment' === get_post_type($postId)) {
+            $filename = basename ( get_attached_file( $postId ) );
+            $response = $this->client->request('DELETE', $filename);
+        }
     }
 
     public function AJAX_sync() {
