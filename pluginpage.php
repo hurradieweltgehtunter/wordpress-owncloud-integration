@@ -372,19 +372,13 @@ class PluginPage
     /**
      * Syncs files uploaded in wordpress to owncloud
      *
-     * @param array $file uploaded file from $_FILE
+     * @param array $file parameters of saved file (file abs path, url, mime type)
      */
     public function sync_to_oc($file) {
-
         $ofile = fopen($file['file'], "r");
         $rfile = fread($ofile, filesize($file['file']));
 
-        try {
-            $response = $this->client->request('PUT', basename($file['url']), $rfile);
-        } catch (Exception $e) {
-            echo '<pre>'; print_r($e); echo '</pre>';
-            echo 'Exception abgefangen: ',  $e->getMessage(), "\n";
-        }
+        $response = $this->client->request('PUT', basename($file['url']), $rfile);
 
         return $file;
     }
