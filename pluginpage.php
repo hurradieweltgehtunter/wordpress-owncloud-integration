@@ -16,8 +16,6 @@ class PluginPage
     {
         include 'vendor/autoload.php';
 
-        
-
         // Load options
         $this->options['baseUri'] = get_option('ocBaseUri'); // URL to owncloud instance
         $this->options['urlParsed'] = parse_url($this->options['baseUri']);
@@ -44,9 +42,11 @@ class PluginPage
         add_filter( 'attachment_fields_to_save', array($this, 'save_custom_attachment_fields'), 10, 2 );
 
         if ($this->options['syncbothways'] === '1') {
-            add_filter('wp_handle_upload', array($this, 'sync_to_oc') );
-            add_action( 'delete_attachment', array($this, 'delete_from_oc') );   
+            // add_filter( 'wp_handle_upload', array($this, 'sync_to_oc') );
+            add_filter( 'add_attachment', array($this, 'sync_to_oc') );
+            add_action( 'delete_attachment', array($this, 'delete_from_oc') );
         }
+
 
         //AJAX Functions
         add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
@@ -104,6 +104,9 @@ class PluginPage
 
                 if (isset($_POST['ocsyncPath'])) {
                     $_POST['ocsyncPath'] = str_replace($this->options['urlParsed']['path'] . $this->options['webdavSlug'],'', $_POST['ocsyncPath']);
+
+                    $_POST['ocsyncPath'] = rtrim($_POST['ocsyncPath'], '/');
+
                     update_option('ocsyncPath', $_POST['ocsyncPath']);
                     $this->options['syncPath'] = $_POST['ocsyncPath'];
                 }
@@ -235,7 +238,7 @@ class PluginPage
      */
     public function add_custom_attachment_fields( $form_fields, $post ) {
         $form_fields['oc_syncdate'] = array(
-            'label' => 'Synced from owncloud',
+            'label' => 'ownCloud sync',
             'input' => 'html',
             'html' => get_post_meta( $post->ID, 'oc_syncdate', true )
         );
@@ -255,8 +258,6 @@ class PluginPage
         if( isset( $attachment['oc_syncdate'] ) )
             update_post_meta( $post['ID'], 'oc_syncdate', $attachment['oc_syncdate'] );
 
-        if( isset( $attachment['oc_etag'] ) )
-            update_post_meta( $post['ID'], 'oc_etag', $attachment['oc_etag'] );
         return $post;
     }
 
@@ -321,7 +322,7 @@ class PluginPage
         if(DEBUG) echo 'inserting file ' . $file['name']  . "\n";
         if(DEBUG) print_r($file);
 
-        $response = $this->client->request('GET', $this->options['syncPath'] . $file['name']);
+        $response = $this->client->request('GET', $this->options['syncPath'] . '/' . $file['name']);
 
         $upload_file = wp_upload_bits($file['name'], null, $response['body']);
 
@@ -401,32 +402,38 @@ class PluginPage
     /**
      * Syncs files uploaded in wordpress to owncloud
      *
-     * @param array $file parameters of saved file (file abs path, url, mime type)
+     * @param int $attachmentId ID of new added file
      */
-    public function sync_to_oc($file) {
-        $ofile = fopen($file['file'], "r");
-        $rfile = fread($ofile, filesize($file['file']));
+    public function sync_to_oc ($attachmentId) {
 
-        $response = $this->client->request('PUT', basename($file['url']), $rfile);
+        $fileUrl = wp_get_attachment_url($attachmentId);
+        $filePath = get_attached_file($attachmentId);
 
-        return $file;
+        $ofile = fopen($filePath, "r");
+        $rfile = fread($ofile, filesize($filePath));
+        $filename = basename($fileUrl);
+
+        $response = $this->client->request('PUT', $this->options['syncPath'] . '/' . $filename, $rfile);
+
+        update_post_meta( $attachmentId, 'oc_etag', $response['headers']['etag'] );
+        update_post_meta( $attachmentId, 'oc_syncdate', date('d.m.Y H:i:s') );
     }
 
     /**
      * Deletes a file from ownCloud if deleted in WP
      *
-     * @param array $file parameters of saved file (file abs path, url, mime type)
+     * @param int $postId ID of element to delete
      */
     public function delete_from_oc($postId) {
         if ('attachment' === get_post_type($postId)) {
             $filename = basename ( get_attached_file( $postId ) );
-            $response = $this->client->request('DELETE', $filename);
+            $response = $this->client->request('DELETE', $this->options['syncPath'] . '/' . $filename);
         }
     }
 
     public function AJAX_sync() {
 
-        $file_list = $this->client->propfind('Photos', array(
+        $file_list = $this->client->propfind($this->options['syncPath'], array(
             '{DAV:}getetag',
             '{DAV:}getlastmodified',
             '{DAV:}getetag',
@@ -520,7 +527,7 @@ class PluginPage
         include 'vendor/autoload.php';
 
         $settings = array(
-            'baseUri' => $baseUri . 'remote.php/webdav',
+            'baseUri' => $baseUri . $this->options['webdavSlug'],
             'userName' => $userName,
             'password' => $password,
             'depth' => 1
