@@ -392,6 +392,8 @@ class PluginPage
      * @param string $password password as set in ownCloud -> Security -> app passwords
     */
     private function test_connection($baseUri, $userName, $password) {
+        if(substr($baseUri, -1) !== '/')
+            $baseUri = $baseUri . '/';
 
         $settings = array(
             'baseUri' => $baseUri . $this->options['webdavSlug'],
