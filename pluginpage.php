@@ -22,7 +22,7 @@ class PluginPage
         add_filter( 'attachment_fields_to_edit', array($this, 'add_custom_attachment_fields'), 10, 2 );
         add_filter( 'attachment_fields_to_save', array($this, 'save_custom_attachment_fields'), 10, 2 );
 
-        add_filter('wp_handle_upload_prefilter', array($this, 'sync_to_oc') );
+        add_filter('wp_handle_upload', array($this, 'sync_to_oc') );
 
         //AJAX Functions
         add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
@@ -375,7 +375,17 @@ class PluginPage
      * @param array $file uploaded file from $_FILE
      */
     public function sync_to_oc($file) {
-        $response = $this->client->request('PUT', $file['name'], file_get_contents($file['tmp_name']));
+
+        $ofile = fopen($file['file'], "r");
+        $rfile = fread($ofile, filesize($file['file']));
+
+        try {
+            $response = $this->client->request('PUT', basename($file['url']), $rfile);
+        } catch (Exception $e) {
+            echo '<pre>'; print_r($e); echo '</pre>';
+            echo 'Exception abgefangen: ',  $e->getMessage(), "\n";
+        }
+
         return $file;
     }
 
