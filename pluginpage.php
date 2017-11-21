@@ -16,19 +16,7 @@ class PluginPage
     {
         include 'vendor/autoload.php';
 
-        add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'page_enqueue' ));
-
-        add_filter( 'attachment_fields_to_edit', array($this, 'add_custom_attachment_fields'), 10, 2 );
-        add_filter( 'attachment_fields_to_save', array($this, 'save_custom_attachment_fields'), 10, 2 );
-
-        add_filter('wp_handle_upload', array($this, 'sync_to_oc') );
-
-        //AJAX Functions
-        add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
-        add_action( 'wp_ajax_get_files', array( $this, 'AJAX_sync' ) );
-        add_action( 'wp_ajax_empty_media_pool', array( $this, 'AJAX_empty_media_pool' ));
-        add_action( 'wp_ajax_test_connection', array( $this, 'AJAX_test_connection' ));
+        
 
         // Load options
         $this->options['baseUri'] = get_option('ocBaseUri'); // URL to owncloud instance
@@ -36,6 +24,7 @@ class PluginPage
         $this->options['webdavSlug'] = 'remote.php/webdav/';
         $this->options['syncPath'] = get_option('ocsyncPath');
         $this->options['userName'] = get_option('ocUserName');
+        $this->options['syncbothways'] = get_option('ocsyncbothways');
 
         $this->options['password'] = get_option('ocPassword');
         $this->options['depth'] = 1;
@@ -47,6 +36,22 @@ class PluginPage
         );
 
         $this->client = new Client($settings);
+
+        add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'page_enqueue' ));
+
+        add_filter( 'attachment_fields_to_edit', array($this, 'add_custom_attachment_fields'), 10, 2 );
+        add_filter( 'attachment_fields_to_save', array($this, 'save_custom_attachment_fields'), 10, 2 );
+
+        if ($this->options['syncbothways'] === '1') {
+            add_filter('wp_handle_upload', array($this, 'sync_to_oc') );    
+        }
+        
+        //AJAX Functions
+        add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
+        add_action( 'wp_ajax_get_files', array( $this, 'AJAX_sync' ) );
+        add_action( 'wp_ajax_empty_media_pool', array( $this, 'AJAX_empty_media_pool' ));
+        add_action( 'wp_ajax_test_connection', array( $this, 'AJAX_test_connection' ));
     }
 
     /**
@@ -72,36 +77,47 @@ class PluginPage
             wp_die('Unauthorized user');
         }
 
-        // if (count($_POST) > 0 && !wp_verify_nonce( '_wp_nonce', 'wpshout_option_page_example_action' )) {
-        //     wp_die('Nonce verification failed');
-        // }
+        if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
+            if ( ! isset( $_POST['_oc_nonce'] ) || ! wp_verify_nonce( $_POST['_oc_nonce'], 'oc_settings_nonce' ) ) {
+                wp_die( 'Cheating, Huh?' );
+            }
 
-        if (isset($_POST['ocBaseUri'])) {
+            if (isset($_POST['oc_settings_submitted']) && $_POST['oc_settings_submitted'] === '1') {
+                if (isset($_POST['ocBaseUri'])) {
+                    if(substr($_POST['ocBaseUri'], -1) !== '/')
+                        $_POST['ocBaseUri'] = $_POST['ocBaseUri'] . '/';
 
-            if(substr($_POST['ocBaseUri'], -1) !== '/')
-                $_POST['ocBaseUri'] = $_POST['ocBaseUri'] . '/';
+                    update_option('ocBaseUri', $_POST['ocBaseUri']);
+                    $this->options['baseUri'] = $_POST['ocBaseUri'];
+                }
 
-            update_option('ocBaseUri', $_POST['ocBaseUri']);
-            $this->options['baseUri'] = $_POST['ocBaseUri'];
+                if (isset($_POST['ocUserName'])) {
+                    update_option('ocUserName', $_POST['ocUserName']);
+                    $this->options['userName'] = $_POST['ocUserName'];
+                }
+
+                if (isset($_POST['ocPassword'])) {
+                    update_option('ocPassword', $_POST['ocPassword']);
+                    $this->options['password'] = $_POST['ocPassword'];
+                }
+
+                if (isset($_POST['ocsyncPath'])) {
+                    $_POST['ocsyncPath'] = str_replace($this->options['urlParsed']['path'] . $this->options['webdavSlug'],'', $_POST['ocsyncPath']);
+                    update_option('ocsyncPath', $_POST['ocsyncPath']);
+                    $this->options['syncPath'] = $_POST['ocsyncPath'];
+                }
+
+                if (isset($_POST['ocsyncbothways'])) {
+                    update_option('ocsyncbothways', $_POST['ocsyncbothways']);
+                    $this->options['syncbothways'] = $_POST['ocsyncbothways'];
+                } else {
+                    update_option('ocsyncbothways', 0);
+                    $this->options['syncbothways'] = 0;
+                }
+            }
         }
-
-        if (isset($_POST['ocUserName'])) {
-            update_option('ocUserName', $_POST['ocUserName']);
-            $this->options['userName'] = $_POST['ocUserName'];
-        }
-
-        if (isset($_POST['ocPassword'])) {
-            update_option('ocPassword', $_POST['ocPassword']);
-            $this->options['password'] = $_POST['ocPassword'];
-        }
-
-        if (isset($_POST['ocsyncPath'])) {
-            $_POST['ocsyncPath'] = str_replace($this->options['urlParsed']['path'] . $this->options['webdavSlug'],'', $_POST['ocsyncPath']);
-            update_option('ocsyncPath', $_POST['ocsyncPath']);
-            $this->options['syncPath'] = $_POST['ocsyncPath'];
-        }
-
         ?>
+
         <div class="wrap">
             <div class="oc">
                 <div class="oc-circle l1 s1 el1"></div>
@@ -162,9 +178,21 @@ class PluginPage
                         </tr>
 
                         <tr>
+                            <th scope="row"><label for="ocsyncbothways">Sync both ways</label></th>
+                            <td>
+                                <fieldset>
+                                    <legend class="screen-reader-text"><span>Mitgliedschaft</span></legend><label for="ocsyncbothways">
+                                    <input name="ocsyncbothways" type="checkbox" id="ocsyncbothways" value="1" <?php if ($this->options['syncbothways'] === '1') echo 'checked="checked"'; ?>>
+                                    If checked, the plugin syncs files uploaded in wordpress back to your owncloud instance</label>
+                                </fieldset>
+                            </td>
+                        </tr>
+
+                        <tr>
                             <th scope="row"></th>
                             <td>
-                                <?php echo wp_nonce_field( 'wpshout_option_page_example_action' ); ?>
+                                <?php echo wp_nonce_field( 'oc_settings_nonce', '_oc_nonce' ); ?>
+                                <input type="hidden" name="oc_settings_submitted" value="1" />
                                 <button type="submit" value="Save" class="save button button-success">Save</button>
                                 <button type="button" class="runner button"><i class="fa fa-repeat"></i> Run sync</button>
                                 <button type="button" class="empty button button-danger"><i class="fa fa-trash"></i> Empty media pool</button>
