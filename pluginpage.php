@@ -1,6 +1,5 @@
 <?php
 use Sabre\DAV\Client;
-define('DEBUG', false);
 
 class PluginPage
 {
@@ -42,11 +41,9 @@ class PluginPage
         add_filter( 'attachment_fields_to_save', array($this, 'save_custom_attachment_fields'), 10, 2 );
 
         if ($this->options['syncbothways'] === '1') {
-            // add_filter( 'wp_handle_upload', array($this, 'sync_to_oc') );
             add_filter( 'add_attachment', array($this, 'sync_to_oc') );
             add_action( 'delete_attachment', array($this, 'delete_from_oc') );
         }
-
 
         //AJAX Functions
         add_action( 'wp_ajax_get_folder_list', array($this, 'AJAX_get_folder_list') );
@@ -56,7 +53,7 @@ class PluginPage
     }
 
     /**
-     * Add options page
+     * Add options page to WP Menu
      */
     public function add_plugin_page()
     {
@@ -70,7 +67,7 @@ class PluginPage
     }
 
     /**
-     * Options page callback
+     * build plugin options page
      */
     public function create_admin_page()
     {
@@ -219,7 +216,7 @@ class PluginPage
     }
 
     /**
-    *
+    * insert scripts and styles
     */
     public function page_enqueue() {
         wp_deregister_script('jquery');
@@ -255,53 +252,13 @@ class PluginPage
      * Save custom fields for attachments
      */
     function save_custom_attachment_fields( $post, $attachment ) {
-        if( isset( $attachment['oc_syncdate'] ) )
-            update_post_meta( $post['ID'], 'oc_syncdate', $attachment['oc_syncdate'] );
-
+        // currently there are no fields the user can edit 
         return $post;
     }
 
     /**
-     * Sanitize each setting field as needed
-     *
-     * @param array $input Contains all settings fields as array keys
-     */
-    public function sanitize( $input )
-    {
-        $new_input = array();
-        if( isset( $input['id_number'] ) )
-            $new_input['id_number'] = absint( $input['id_number'] );
-
-        if( isset( $input['title'] ) )
-            $new_input['title'] = sanitize_text_field( $input['title'] );
-
-        return $new_input;
-    }
-
-    /**
-     * Get the settings option array and print one of its values
-     */
-    public function id_number_callback()
-    {
-        printf(
-            '<input type="text" id="id_number" name="my_option_name[id_number]" value="%s" />',
-            isset( $this->options['id_number'] ) ? esc_attr( $this->options['id_number']) : ''
-        );
-    }
-
-    /**
-     * Get the settings option array and print one of its values
-     */
-    public function title_callback()
-    {
-        printf(
-            '<input type="text" id="title" name="my_option_name[title]" value="%s" />',
-            isset( $this->options['title'] ) ? esc_attr( $this->options['title']) : ''
-        );
-    }
-
-    /**
      * Search media pool and get attachment by title
+     * @param string $title filename without file extension
      */
     public function get_attachment_by_title( $title ) {
         $args = array(
@@ -318,10 +275,16 @@ class PluginPage
             return false;
     }
 
+    /**
+     * Inserts a file into the WP filesystem and DB
+     * @param array $file contains file information
+                    [name] => <filename>
+                    [etag] => <etag>
+                    [lastmodified] => Tue, 21 Nov 2017 15:22:08 GMT
+                    [type] => file
+                    [contenttype] => <mime type>
+    */
     public function insertFile($file) {
-        if(DEBUG) echo 'inserting file ' . $file['name']  . "\n";
-        if(DEBUG) print_r($file);
-
         $response = $this->client->request('GET', $this->options['syncPath'] . '/' . $file['name']);
 
         $upload_file = wp_upload_bits($file['name'], null, $response['body']);
@@ -353,17 +316,7 @@ class PluginPage
         }
     }
 
-    public function AJAX_get_folder_list() {
-        $list = array();
-        $test = $this->test_connection($this->options['baseUri'], $this->options['userName'], $this->options['password']);
-
-        if($test['status'] === 'success') {
-
-            $list = $this->scanFolder(array(), $this->options['urlParsed']['path'] . $this->options['webdavSlug']);    
-        }
-        echo json_encode($list);
-        wp_die();
-    }
+    
 
     /**
      * Scans directory for subfolders
@@ -431,100 +384,14 @@ class PluginPage
         }
     }
 
-    public function AJAX_sync() {
 
-        $file_list = $this->client->propfind($this->options['syncPath'], array(
-            '{DAV:}getetag',
-            '{DAV:}getlastmodified',
-            '{DAV:}getetag',
-            '{DAV:}getcontenttype',
-            '{DAV:}resourcetype',
-            '{DAV:}fileid',
-            '{DAV:}permissions',
-            '{DAV:}size',
-            '{DAV:}getcontentlength',
-            '{DAV:}tags',
-            '{DAV:}favorite',
-            '{DAV:}comments-unread',
-            '{DAV:}owner-display-name',
-            '{DAV:}share-types'
-        ), 1);
-
-        $log = array();
-        foreach($file_list as $uri => $props) {
-            $file = array(
-                'name' => str_replace('/', '', strrchr($uri, '/')),
-                'etag' => str_replace('"', '', $props['{DAV:}getetag']),
-                'lastmodified' => $props['{DAV:}getlastmodified'],
-                'type' => $type,
-                'contenttype' => $props['{DAV:}getcontenttype']
-            );
-
-            if($props['{DAV:}resourcetype'] === null) {
-                if(DEBUG) echo 'file ' . $file['name'] . ' is a file' . "\n";
-                $file['type'] = 'file';
-
-                $existingFile = $this->get_attachment_by_title(preg_replace('/\\.[^.\\s]{3,4}$/', '', $file['name'])); //remove file extension
-
-                //save only updated files
-
-                if($existingFile !== false) {
-                    if(DEBUG) echo 'file ' . $file['name'] . ' exists' . "\n";
-
-                    if(get_post_meta($existingFile->ID, 'oc_etag', true) !== $file['etag']) {
-                        if(DEBUG) echo 'file ' . $file['name'] . ' has different etag' . "\n";
-
-                        // TODO: takeover metadata like alt tags etc. from existing file
-
-                        wp_delete_attachment( $existingFile->ID, true );
-
-                        $this->insertFile($file);
-
-                        $log[] = $file['name'] . ' already existing and changed; overwriting';
-                    } else {
-                        if(DEBUG) echo 'file ' . $file['name'] . ' has same etag; continue' . "\n";
-                        $log[] = $file['name'] . ' already existing and not changed; do nothing';
-                    }
-                } else {
-                    if(DEBUG) echo 'file ' . $file['name'] . ' is not existing; inserting' . "\n";
-                    $this->insertFile($file);
-                    $log[] = $file['name'] . ' is new; inserting';
-                }
-
-            } else {
-                if(DEBUG) echo 'file ' . $file['name'] . ' is a directory' . "\n";
-                $type = 'directory';
-            }
-        }
-
-        echo json_encode(array('log' => $log));
-
-        wp_die(); // this is required to terminate immediately and return a proper response
-    }
-
-    public function AJAX_empty_media_pool() {
-
-        $attachments = get_posts( array(
-            'post_type'      => 'attachment',
-            'posts_per_page' => -1,
-            'post_status'    => 'any'
-        ) );
-        $log = array('errors' => [], 'success' => []);
-
-        foreach ( $attachments as $attachment ) {
-            if ( false === wp_delete_attachment( $attachment->ID, true ) ) {
-                $log['errors'][] = 'Could not delete ' . $attachment->ID;
-            } else {
-                $log['success'][] = $attachment->ID . ' successfully deleted';
-            }
-        }
-
-        echo json_encode($log);
-        wp_die();
-    }
-
+    /**
+     * Tests the webdav connection for any given credentials
+     * @param string $baseUri the ownCloud URL, e.g. http://example.com/myowncloud
+     * @param string $userName user name as set in ownCloud -> Security -> app passwords
+     * @param string $password password as set in ownCloud -> Security -> app passwords
+    */
     private function test_connection($baseUri, $userName, $password) {
-        include 'vendor/autoload.php';
 
         $settings = array(
             'baseUri' => $baseUri . $this->options['webdavSlug'],
@@ -560,10 +427,106 @@ class PluginPage
         }
     }
 
+
+    public function AJAX_empty_media_pool() {
+
+        $attachments = get_posts( array(
+            'post_type'      => 'attachment',
+            'posts_per_page' => -1,
+            'post_status'    => 'any'
+        ) );
+        $log = array('errors' => [], 'success' => []);
+
+        foreach ( $attachments as $attachment ) {
+            if ( false === wp_delete_attachment( $attachment->ID, true ) ) {
+                $log['errors'][] = 'Could not delete ' . $attachment->ID;
+            } else {
+                $log['success'][] = $attachment->ID . ' successfully deleted';
+            }
+        }
+
+        echo json_encode($log);
+        wp_die(); // this is required to terminate immediately and return a proper response
+    }
+
     public function AJAX_test_connection() {
 
         echo json_encode($this->test_connection($_POST['credentials']['baseUri'], $_POST['credentials']['userName'], $_POST['credentials']['password']));
 
         wp_die();
+    }
+
+    public function AJAX_get_folder_list() {
+        $list = array();
+        $test = $this->test_connection($this->options['baseUri'], $this->options['userName'], $this->options['password']);
+
+        if($test['status'] === 'success') {
+
+            $list = $this->scanFolder(array(), $this->options['urlParsed']['path'] . $this->options['webdavSlug']);    
+        }
+        echo json_encode($list);
+        wp_die();
+    }
+
+    public function AJAX_sync() {
+        $file_list = $this->client->propfind($this->options['syncPath'], array(
+            '{DAV:}getetag',
+            '{DAV:}getlastmodified',
+            '{DAV:}getetag',
+            '{DAV:}getcontenttype',
+            '{DAV:}resourcetype',
+            '{DAV:}fileid',
+            '{DAV:}permissions',
+            '{DAV:}size',
+            '{DAV:}getcontentlength',
+            '{DAV:}tags',
+            '{DAV:}favorite',
+            '{DAV:}comments-unread',
+            '{DAV:}owner-display-name',
+            '{DAV:}share-types'
+        ), 1);
+
+        $log = array();
+        foreach($file_list as $uri => $props) {
+            $file = array(
+                'name' => str_replace('/', '', strrchr($uri, '/')),
+                'etag' => str_replace('"', '', $props['{DAV:}getetag']),
+                'lastmodified' => $props['{DAV:}getlastmodified'],
+                'type' => $type,
+                'contenttype' => $props['{DAV:}getcontenttype']
+            );
+
+            if($props['{DAV:}resourcetype'] === null) {
+                $file['type'] = 'file';
+
+                $existingFile = $this->get_attachment_by_title(preg_replace('/\\.[^.\\s]{3,4}$/', '', $file['name'])); //remove file extension
+
+                if($existingFile !== false) {
+                    //save only updated files
+                    if(get_post_meta($existingFile->ID, 'oc_etag', true) !== $file['etag']) {
+
+                        // TODO: takeover metadata like alt tags etc. from existing file
+
+                        wp_delete_attachment( $existingFile->ID, true );
+
+                        $this->insertFile($file);
+
+                        $log[] = $file['name'] . ' already existing and changed; overwriting';
+                    } else {
+                        $log[] = $file['name'] . ' already existing and not changed; do nothing';
+                    }
+                } else {
+                    $this->insertFile($file);
+                    $log[] = $file['name'] . ' is new; inserting';
+                }
+
+            } else {
+                $type = 'directory';
+            }
+        }
+
+        echo json_encode(array('log' => $log));
+
+        wp_die(); // this is required to terminate immediately and return a proper response
     }
 }
