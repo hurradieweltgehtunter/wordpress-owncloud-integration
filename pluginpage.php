@@ -142,7 +142,7 @@ class PluginPage
                                 <label for="ocBaseUri">ownCloud URL</label>
                             </th>
                             <td><input name="ocBaseUri" type="text" id="ocBaseUri" value="<?php echo $this->options['baseUri']; ?>" class="regular-text">
-                                <p class="description">URL to your ownCloud instance</p>
+                                <p class="description">URL to your ownCloud instance, e.g. https://owncloud.example.com</p>
                             </td>
                         </tr>
 
@@ -184,8 +184,9 @@ class PluginPage
                                 <fieldset>
                                     <legend class="screen-reader-text"><span>Mitgliedschaft</span></legend><label for="ocsyncbothways">
                                     <input name="ocsyncbothways" type="checkbox" id="ocsyncbothways" value="1" <?php if ($this->options['syncbothways'] === '1') echo 'checked="checked"'; ?>>
-                                    If checked, the plugin syncs files uploaded in wordpress back to your owncloud instance</label>
+                                    If checked, the plugin syncs files uploaded in wordpress back to your owncloud instance.</label>
                                 </fieldset>
+                                <p class="description">Note: This means also that files get deleted in your ownCloud if deleted in Wordpress.</p>
                             </td>
                         </tr>
 
@@ -383,7 +384,6 @@ class PluginPage
             $response = $this->client->request('DELETE', $this->options['syncPath'] . '/' . $filename);
         }
     }
-
 
     /**
      * Tests the webdav connection for any given credentials
